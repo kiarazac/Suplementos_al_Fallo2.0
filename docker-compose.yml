@@ -1,0 +1,15 @@
+services:
+  mariadb:
+    image: mariadb:11
+    container_name: suplementos_db
+
+    restart: always
+
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: suplementos_al_fallo
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: secret
+
+    ports:
+      - "3306:3306"

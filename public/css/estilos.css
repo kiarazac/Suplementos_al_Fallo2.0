@@ -1,0 +1,180 @@
+.fondo-login {
+  background-image: url('../imagenes/fondos/fondo-log.png');
+  /* ruta de tu imagen */
+  background-size: cover;
+  /* que cubra toda la pantalla */
+  background-position: center;
+  /* centrada */
+  background-repeat: no-repeat;
+  /* que no se repita */
+
+}
+
+body.carrito-fondo {
+  background-image: url('../imagenes/fondos/fondo_carrito.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+}
+
+.producto {
+    height: 250px; /* Obligamos a que la "caja" de la imagen siempre mida esto */
+    width: 100%; /* Que ocupe todo el ancho de la tarjeta */
+    object-fit: contain; /* ¡La magia! Achica la imagen sin deformarla para que entre en la caja de 250px */
+    padding: 1rem; /* Le da un respiro para que no toque los bordes */
+}
+
+.encabezado {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgb(44, 42, 42);
+  height: 100px;
+  z-index: 10;
+
+  /* Agregamos Flexbox para ordenar el contenido adentro */
+  display: flex;
+  align-items: left;
+  /* Centra el logo y el texto verticalmente perfecto */
+  padding-left: 20px;
+}
+
+.navbar:hover {
+  filter: drop-shadow(3px 0px 10px rgba(218, 159, 32, 0.8));
+  transition: filter 0.3s ease;
+}
+
+.encabezado a img {
+  filter: drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.973));
+  transition: transform 0.2s ease;
+  
+}
+
+.encabezado a img:hover {
+  filter: drop-shadow(5px 5px 25px rgba(218, 159, 32, 0.8));
+  transform: scale(1.05);
+  
+}
+
+
+body {
+  background-image: url('../imagenes/fondos/fondo.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  margin: 0;
+  color: white;
+  text-align: center;
+  padding-top: 100px;
+  font-family: "century gothic";
+
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+footer {
+  margin-top: auto;
+  width: 100%;
+  padding: 20px 0;
+}
+
+
+.navegacion ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: rgb(44, 42, 42);
+  position: fixed;
+  top: 0px;
+  right: 0px;
+
+}
+
+.logo {
+  position: absolute;
+  top: 0px;
+  left: 50px;
+  width: 152px;
+  height: 100px;
+
+}
+
+.welcome-container {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  letter-spacing: 1px;
+  background-color: rgba(26, 26, 26, 0.85);
+  color: #C5A059;
+  /* Letra dorado metálico */
+  background-size: cover;
+  /* Asegura que la imagen de fondo cubra todo el contenedor */
+  padding: 10px;
+  /* Espaciado interno */
+  border-radius: 50px;
+  /* Bordes redondeados */
+  display: inline-block;
+  /* Para ajustar el tamaño al contenido */
+  margin-top: 50px;
+  /* Espacio desde el encabezado */
+}
+.carousel-item img {
+  width: 60%;
+  height: 500px;
+  /* Le damos una altura fija para que tenga una "caja" donde acomodarse */
+  object-fit: contain;
+  /* Achica la imagen hasta que entre COMPLETAMENTE en la caja, sin recortar nada */
+
+  /* El truco para centrarla en el medio de la pantalla: */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.animacion-card {
+  animation: aparecer 1s ease;
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+    /* viene desde la derecha */
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+h1 {
+  margin-top: 70px;
+
+}
+
+
+
+
+.navbar-collapse {
+  justify-content: flex-end;
+  /* Alinea el contenido a la derecha */
+
+}
+
+button {
+  max-width: 200px;
+
+}
+
+button:hover {
+  filter: drop-shadow(5px 5px 25px rgba(218, 159, 32, 0.8));
+  transform: scale(1.05);
+  /* Un pequeño aumento de tamaño al pasar el mouse */
+}
