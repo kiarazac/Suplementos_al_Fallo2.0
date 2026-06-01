@@ -116,7 +116,7 @@ class PedidoController extends Controller
     return back();
 }
 
-    public function eliminar($id)
+    public function eliminarUnDetalle($id)
     {
         $detalle = DetallePedido::findOrFail($id);
 
@@ -129,5 +129,21 @@ class PedidoController extends Controller
         }
 
         return back();
+    }
+    public function eliminarTodo($id)
+    {
+        $detalles = DetallePedido::where('pedido_id', $id)->get();
+
+        $pedido = Pedido::findOrFail($id);
+
+        foreach ($detalles as $detalle) {
+            $detalle->delete();
+        }
+
+        if ($pedido->detalle_pedidos()->count() == 0) {
+            $pedido->delete();
+        }
+
+        return redirect()->back()->with('success', 'Carrito vaciado correctamente');
     }
 }

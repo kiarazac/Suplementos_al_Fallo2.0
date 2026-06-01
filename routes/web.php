@@ -26,8 +26,13 @@ Route::post(
 
 Route::delete(
     '/carrito/eliminar/{id}',
-    [PedidoController::class, 'eliminar']
-)->name('carrito.eliminar');
+    [PedidoController::class, 'eliminarUnDetalle']
+)->name('carrito.eliminarUnDetalle');
+
+Route::delete(
+    '/carrito/eliminarTodo/{id}',
+    [PedidoController::class, 'eliminarTodo']
+)->name('carrito.eliminarTodo');
 
 Route::get('/sobre-nosotros', function () {
     return view('sobre-nosotros');
@@ -116,7 +121,7 @@ Route::get('/productos-gold', function () {
 Route::get(
     '/catalogo',
     [CatalogoController::class, 'index']
-);
+)->name('catalogo.index');
 
 // 1. NUEVA RUTA PARA ACTIVAR (Debe ir primero)
 // Todo lo que esté dentro de este grupo pasará por tu AdminMiddleware

@@ -16,7 +16,19 @@
 
 
                 @if(!$pedido)
+                <div class="row">
+                    <div class="col">
+                        <p>
+                            {{-- BOTÓN SEGUIR COMPRANDO--}}
+                            <a href="{{ route('catalogo.index') }}" class="btn btn-primary">
+                                <i class="bi bi-arrow-left"></i> Seguir Comprando
+                            </a>
+                        </p>
 
+                    </div>
+                    <div class="col"></div>
+                    <div class="col"></div>
+                </div>
                 <div class="alert alert-warning text-center mt-5">
 
                     <h3>Tu carrito está vacío</h3>
@@ -29,6 +41,12 @@
 
                 @else
 
+                <p>
+                    {{-- BOTÓN SEGUIR COMPRANDO--}}
+                    <a href="{{ route('catalogo.index') }}" class="btn btn-primary">
+                        <i class="bi bi-arrow-left"></i> Seguir Comprando
+                    </a>
+                </p>
 
                 @foreach($pedido->detalle_pedidos as $detalle_pedido)
                 <div class="col-6 col-md-4 d-flex justify-content-center">
@@ -87,18 +105,16 @@
                                     Precio unitario: ${{ $detalle_pedido->producto->precio }}
                                 </p>
                                 <p>
-                                    {{-- BOTÓN ELIMINAR --}}
-                                <form action="{{ route('carrito.eliminar', $detalle_pedido->id) }}" method="POST">
+                                    {{-- BOTÓN ELIMINAR UN DETALLE --}}
+                                <form action="{{ route('carrito.eliminarUnDetalle', $detalle_pedido->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">
+                                    <button type="submit" class="btn btn-secondary">
                                         <i class="bi bi-trash"></i> Eliminar
                                     </button>
                                 </form>
 
                                 </p>
-
-
                             </div>
 
                         </div>
@@ -106,6 +122,37 @@
                     </div>
 
                 </div>
+
                 @endforeach
-                @endif
-                @endsection
+                <div class="row mt-5">
+                    <div class="col"></div>
+                    <div class="col">
+                        <h3 class="text-end text-light">Total: ${{ $pedido->total }}</h3>
+                    </div>
+                    <div class="col">
+
+
+                        <p>
+                            {{-- BOTÓN ELIMINAR TODO EL CARRITO--}}
+                        <form action="{{ route('carrito.eliminarTodo', $pedido->id) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> Eliminar Todo el Carrito
+                            </button>
+                        </form>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- BOTÓN FINALIZAR COMPRA
+                        <p>
+                            <a href="{{ route('pedido.finalizar') }}" class="btn btn-warning">
+                                Finalizar Compra <i class="bi bi-check-lg"></i>
+                            </a>
+                        </p>-->
+
+            </div>
+        </div>
+        @endif
+        @endsection
