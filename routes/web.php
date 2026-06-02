@@ -135,7 +135,7 @@ Route::get(
 // 1. NUEVA RUTA PARA ACTIVAR (Debe ir primero)
 // Todo lo que esté dentro de este grupo pasará por tu AdminMiddleware
 Route::middleware([AdminMiddleware::class])->group(function () {
-    Route::resource('productos', ProductoController::class)->names('productos');
+    Route::resource('/panel_admin', ProductoController::class)->names('panel_admin');
     
     // ==========================================
     // RUTAS DE MARCAS

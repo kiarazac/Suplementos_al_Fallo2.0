@@ -88,7 +88,7 @@
 
             @auth
                 @if(Auth::user()->role == 'admin') 
-                    <a class="btn btn-outline-danger ms-2 d-flex align-items-center gap-2" href="/productos">
+                    <a class="btn btn-outline-danger ms-2 d-flex align-items-center gap-2" href="/panel_admin">
                         <i class="bi bi-person-fill"></i>
                         <span>{{ Auth::user()->name }}</span>
                     </a>

@@ -16,7 +16,7 @@ class ProductoController extends Controller
     {
         $productos = Producto::all();
 
-        return view('productos.index', compact('productos'));
+        return view('panel_admin.index', compact('productos'));
     }
 
     /**
@@ -29,7 +29,7 @@ class ProductoController extends Controller
         $marcas = Marca::all();
 
         return view(
-            'productos.create',
+            'panel_admin.create',
             compact('categorias', 'marcas')
         );
     }
@@ -73,7 +73,7 @@ class ProductoController extends Controller
             'marca_id' => $request->marca_id,
 
         ]);
-        return redirect('/productos');
+        return redirect('/panel_admin');
     }
 
     /**
@@ -84,7 +84,7 @@ class ProductoController extends Controller
     $producto = Producto::findOrFail($id);
 
     return view(
-        'productos.show',
+        'panel_admin.show',
         compact('producto')
     );
 }
@@ -101,7 +101,7 @@ class ProductoController extends Controller
     $marcas = Marca::all();
 
     return view(
-        'productos.edit',
+        'panel_admin.edit',
         compact(
             'producto',
             'categorias',
@@ -156,7 +156,7 @@ class ProductoController extends Controller
 
     ]);
 
-    return redirect('/productos');
+    return redirect('/panel_admin');
 }
 
     /**
@@ -168,6 +168,6 @@ class ProductoController extends Controller
 
     $producto->delete();
 
-    return redirect('/productos');
+    return redirect('/panel_admin');
 }
 }
