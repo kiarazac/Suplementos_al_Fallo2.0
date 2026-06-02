@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/estilos.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+    @yield('page-css')
 </head>
 
 <body class="bg-dark text-light d-flex flex-column min-vh-100 @yield('body-class')">
@@ -24,6 +26,8 @@
 
     <!-- Footer -->
     @include('partials.footer')
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Scripts -->
     @yield('scripts')
