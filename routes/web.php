@@ -14,7 +14,9 @@ use App\Http\Middleware\AdminMiddleware;
 
 Route::get('/', function () {
     return view('Home');
-});
+})->name('home');
+
+
 Route::get('/carrito', [PedidoController::class, 'index'])
     ->name('carrito.index');
 
@@ -34,10 +36,15 @@ Route::delete(
     [PedidoController::class, 'eliminarTodo']
 )->name('carrito.eliminarTodo');
 
+Route::get('/carrito/generar_pedido', [PedidoController::class, 'pedidoSinConfirmar'])
+    ->name('carrito.pedidoSinConfirmar');
+
+Route::post('/carrito/confirmar_pedido/{id}', [PedidoController::class, 'confirmarPedido'])
+    ->name('carrito.confirmarPedido');
+
 Route::get('/sobre-nosotros', function () {
     return view('sobre-nosotros');
 });
-
 
 Route::get('/login', [AuthController::class, 'showLogin'])
     ->name('login');
@@ -122,6 +129,8 @@ Route::get(
     '/catalogo',
     [CatalogoController::class, 'index']
 )->name('catalogo.index');
+
+
 
 // 1. NUEVA RUTA PARA ACTIVAR (Debe ir primero)
 // Todo lo que esté dentro de este grupo pasará por tu AdminMiddleware
