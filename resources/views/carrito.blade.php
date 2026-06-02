@@ -10,39 +10,26 @@
 
         {{-- CONTENEDOR PRODUCTOS --}}
         <div class="container-fluid text-center text-light mt-5">
-
             <div class="row mb-3 gy-md-4 gx-md-0">
 
-
-
-                @if(!$pedido)
+                @if(!$pedido || $pedido->detalle_pedidos->isEmpty())
                 <div class="row">
                     <div class="col">
                         <p>
-                            {{-- BOTÓN SEGUIR COMPRANDO--}}
                             <a href="{{ route('catalogo.index') }}" class="btn btn-primary">
                                 <i class="bi bi-arrow-left"></i> Seguir Comprando
                             </a>
                         </p>
-
                     </div>
-                    <div class="col"></div>
-                    <div class="col"></div>
                 </div>
                 <div class="alert alert-warning text-center mt-5">
-
                     <h3>Tu carrito está vacío</h3>
-
-                    <p>
-                        Todavía no agregaste productos.
-                    </p>
-
+                    <p>Todavía no agregaste productos.</p>
                 </div>
 
                 @else
 
                 <p>
-                    {{-- BOTÓN SEGUIR COMPRANDO--}}
                     <a href="{{ route('catalogo.index') }}" class="btn btn-primary">
                         <i class="bi bi-arrow-left"></i> Seguir Comprando
                     </a>
@@ -50,62 +37,17 @@
 
                 @foreach($pedido->detalle_pedidos as $detalle_pedido)
                 <div class="col-6 col-md-4 d-flex justify-content-center">
-
-                    <div
-                        class="card mb-3 mt-3 h-100"
-                        style="width: 18rem;">
-                        {{-- IMAGEN --}}
-                        <img
-
-                            src="{{ asset($detalle_pedido->producto->imagen) }}"
-
-                            class="card-img-top producto"
-
-                            alt="{{ $detalle_pedido->producto->nombre }}">
-
-
-
+                    <div class="card mb-3 mt-3 h-100" style="width: 18rem;">
+                        <img src="{{ asset($detalle_pedido->producto->imagen) }}" class="card-img-top producto" alt="{{ $detalle_pedido->producto->nombre }}">
 
                         <div class="card-body d-flex flex-column">
-
-
-
-
-                            {{-- PRECIO --}}
-                            <h5
-                                class="card-title fw-bold text-black">
-
-                                ${{ $detalle_pedido->subtotal }}
-
-                            </h5>
-
-
-
+                            <h5 class="card-title fw-bold text-black">${{ $detalle_pedido->subtotal }}</h5>
 
                             <div class="mt-auto">
-
-
-
-
-                                {{-- NOMBRE --}}
-                                <p
-                                    class="card-text text-black mb-2">
-
-                                    {{ $detalle_pedido->producto->nombre }}
-
-                                </p>
-                                {{--CANTIDAD--}}
-                                <p
-                                    class="card-text text-black mb-2">
-
-                                    Cantidad: {{ $detalle_pedido->cantidad }}
-
-                                </p>
-                                <p class="card-text text-black mb-2">
-                                    Precio unitario: ${{ $detalle_pedido->producto->precio }}
-                                </p>
-                                <p>
-                                    {{-- BOTÓN ELIMINAR UN DETALLE --}}
+                                <p class="card-text text-black mb-2">{{ $detalle_pedido->producto->nombre }}</p>
+                                <p class="card-text text-black mb-2">Cantidad: {{ $detalle_pedido->cantidad }}</p>
+                                <p class="card-text text-black mb-2">Precio unitario: ${{ $detalle_pedido->producto->precio }}</p>
+                                
                                 <form action="{{ route('carrito.eliminarUnDetalle', $detalle_pedido->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
@@ -113,27 +55,18 @@
                                         <i class="bi bi-trash"></i> Eliminar
                                     </button>
                                 </form>
-
-                                </p>
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
-
                 @endforeach
+
                 <div class="row mt-5">
                     <div class="col"></div>
                     <div class="col">
                         <h3 class="text-end text-light">Total: ${{ $pedido->total }}</h3>
                     </div>
                     <div class="col">
-
-
-                        <p>
-                            {{-- BOTÓN ELIMINAR TODO EL CARRITO--}}
                         <form action="{{ route('carrito.eliminarTodo', $pedido->id) }}" method="POST">
                             @csrf
                             @method('DELETE')
@@ -141,18 +74,21 @@
                                 <i class="bi bi-trash"></i> Eliminar Todo el Carrito
                             </button>
                         </form>
-                        </p>
                     </div>
                 </div>
 
-                <!-- BOTÓN FINALIZAR COMPRA
-                        <p>
-                            <a href="{{ route('pedido.finalizar') }}" class="btn btn-warning">
-                                Finalizar Compra <i class="bi bi-check-lg"></i>
-                            </a>
-                        </p>-->
+                {{-- Corrección de la ruta para el botón (Cámbiala a GET en web.php si usas <a>) --}}
+                <div class="row mt-3">
+                    <div class="col">
+                        <a href="{{ route('carrito.pedidoSinConfirmar') }}" class="btn btn-warning">
+                            Finalizar Compra <i class="bi bi-check-lg"></i>
+                        </a>
+                    </div>
+                </div>
 
+                @endif {{-- Aquí cierra correctamente el único IF --}}
             </div>
         </div>
-        @endif
-        @endsection
+    </div>
+</div>
+@endsection
