@@ -12,13 +12,22 @@ class ProductoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $productos = Producto::all();
+        $categorias = Categoria::all();
 
-        return view('panel_admin.index', compact('productos'));
+        // Lógica para filtrar las marcas
+        $query = Marca::query();
+
+        if ($request->has('activo') && $request->activo !== null) {
+            $query->where('activo', $request->activo);
+        }
+
+        $marcas = $query->get();
+
+        return view('panel_admin.index', compact('productos', 'marcas', 'categorias'));
     }
-
     /**
      * Show the form for creating a new resource.
      */
