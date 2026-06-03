@@ -16,7 +16,7 @@
                 <ul class="nav nav-pills flex-column mb-auto" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link text-white w-100 text-start" data-bs-toggle="pill"
-                            data-bs-target="#pantalla-home" type="button" role="tab">Pedidos</button>
+                            data-bs-target="#pantalla-pedidos" type="button" role="tab">Pedidos</button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link text-white w-100 text-start" data-bs-toggle="pill"
@@ -38,9 +38,54 @@
             </div>
 
             <div class="tab-content flex-grow-1 p-4" id="v-pills-tabContent">
-                <div class="tab-pane fade" id="pantalla-home" role="tabpanel">
-                    <h1 class="text-white">Bienvenido al Inicio</h1>
-                    <p class="text-white-50">Acá podés poner gráficos o información general.</p>
+                <div class="tab-pane fade" id="pantalla-pedidos" role="tabpanel">
+                    <h1 class="text-white">Gestión de Pedidos</h1>
+                    <p class="text-white-50">Aquí puedes gestionar los pedidos realizados por los clientes.</p>
+                    {{-- GRILLA DE PEDIDOS DINÁMICA --}}
+                    <div class="row g-4 w-100"> {{-- Le sumamos w-100 acá --}}
+                        @foreach($pedidos as $pedido)
+                            
+                            <div class="col-12 col-md-6 col-lg-4">
+                                {{-- Le forzamos un ancho mínimo a la tarjeta con style --}}
+                                <div class="card h-100 bg-dark text-white border-secondary shadow-sm p-3" style="min-width: 280px;">
+                                    <div class="card-body d-flex flex-column text-center">
+                                        
+                                        <h4 class="card-title fw-bold mb-3">Pedido #{{ $pedido->id }}</h4>
+                                        
+                                        <p class="card-text mb-2 text-light fs-6">
+                                            <i class="bi bi-calendar-event"></i> {{ $pedido->created_at->format('d/m/Y H:i') }}
+                                        </p>
+
+                                        <p class="card-text mb-3 text-warning fs-4 fw-bold">
+                                            Total: ${{ number_format($pedido->total, 2) }}
+                                        </p>
+
+                                        <p class="card-text fs-6 mb-4">
+                                            @if($pedido->estado == 'confirmado')
+                                                <span class="badge bg-success px-3 py-2 fs-6">Confirmado</span>
+                                            @elseif($pedido->estado == 'carrito')
+                                                <span class="badge bg-warning text-dark px-3 py-2 fs-6">En Carrito (Sin pagar)</span>
+                                            @else
+                                                <span class="badge bg-secondary px-3 py-2 fs-6">{{ ucfirst($pedido->estado) }}</span>
+                                            @endif
+                                        </p>
+
+                                        <div class="mt-auto d-flex flex-column gap-2">
+                                            
+                                            
+                                            @if($pedido->estado != 'carrito')
+                                                <form action="#" method="POST" class="w-100">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-primary w-100 fw-bold">Despachar</button>
+                                                </form>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+
                 </div>
 
                 <div class="tab-pane fade" id="pantalla-dashboard" role="tabpanel">

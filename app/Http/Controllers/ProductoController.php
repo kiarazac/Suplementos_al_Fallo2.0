@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Producto;
 use App\Models\Categoria;
 use App\Models\Marca;
+use App\Models\Pedido;
 use Illuminate\Http\Request;
 
 class ProductoController extends Controller
@@ -15,9 +16,9 @@ class ProductoController extends Controller
     public function index(Request $request)
     {
         $productos = Producto::all();
-       // --- FILTRO DE CATEGORÍAS ---
+        // --- FILTRO DE CATEGORÍAS ---
         $queryCategorias = Categoria::query();
-        
+
         // Usamos filled() en lugar de has() para asegurarnos de que el filtro ignore la opción "Todas" (valor vacío)
         if ($request->filled('categoria_activa')) {
             // ¡ACÁ ESTABA EL ERROR! Cambiamos 'activo' por 'activa' para que coincida con tu base de datos
@@ -33,8 +34,8 @@ class ProductoController extends Controller
         }
 
         $marcas = $query->get();
-
-        return view('panel_admin.index', compact('productos', 'marcas', 'categorias'));
+        $pedidos = Pedido::orderBy('created_at', 'desc')->get();
+        return view('panel_admin.index', compact('productos', 'marcas', 'categorias', 'pedidos'));
     }
     /**
      * Show the form for creating a new resource.
@@ -97,94 +98,93 @@ class ProductoController extends Controller
      * Display the specified resource.
      */
     public function show(string $id)
-{
-    $producto = Producto::findOrFail($id);
+    {
+        $producto = Producto::findOrFail($id);
 
-    return view(
-        'panel_admin.show',
-        compact('producto')
-    );
-}
+        return view(
+            'panel_admin.show',
+            compact('producto')
+        );
+    }
 
     /**
      * Show the form for editing the specified resource.
      */
-   public function edit(string $id)
-{
-    $producto = Producto::findOrFail($id);
+    public function edit(string $id)
+    {
+        $producto = Producto::findOrFail($id);
 
-    $categorias = Categoria::all();
+        $categorias = Categoria::all();
 
-    $marcas = Marca::all();
+        $marcas = Marca::all();
 
-    return view(
-        'panel_admin.edit',
-        compact(
-            'producto',
-            'categorias',
-            'marcas'
-        )
-    );
-}
+        return view(
+            'panel_admin.edit',
+            compact(
+                'producto',
+                'categorias',
+                'marcas'
+            )
+        );
+    }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(
-    Request $request,
-    string $id
-)
-{
-    $request->validate([
+        Request $request,
+        string $id
+    ) {
+        $request->validate([
 
-        'nombre' => 'required|max:255',
+            'nombre' => 'required|max:255',
 
-        'descripcion' => 'required',
+            'descripcion' => 'required',
 
-        'precio' => 'required|numeric',
+            'precio' => 'required|numeric',
 
-        'stock' => 'required|integer',
+            'stock' => 'required|integer',
 
-        'categoria_id' => 'required',
+            'categoria_id' => 'required',
 
-        'marca_id' => 'required',
+            'marca_id' => 'required',
 
-    ]);
+        ]);
 
-    $producto = Producto::findOrFail($id);
+        $producto = Producto::findOrFail($id);
 
-    $producto->update([
+        $producto->update([
 
-        'nombre' => $request->nombre,
+            'nombre' => $request->nombre,
 
-        'descripcion' => $request->descripcion,
+            'descripcion' => $request->descripcion,
 
-        'precio' => $request->precio,
+            'precio' => $request->precio,
 
-        'stock' => $request->stock,
+            'stock' => $request->stock,
 
-        'imagen' => $request->imagen,
+            'imagen' => $request->imagen,
 
-        'activo' => $request->has('activo'),
+            'activo' => $request->has('activo'),
 
-        'categoria_id' => $request->categoria_id,
+            'categoria_id' => $request->categoria_id,
 
-        'marca_id' => $request->marca_id,
+            'marca_id' => $request->marca_id,
 
-    ]);
+        ]);
 
-    return redirect('/panel_admin');
-}
+        return redirect('/panel_admin');
+    }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
-{
-    $producto = Producto::findOrFail($id);
+    {
+        $producto = Producto::findOrFail($id);
 
-    $producto->delete();
+        $producto->delete();
 
-    return redirect('/panel_admin');
-}
+        return redirect('/panel_admin');
+    }
 }
