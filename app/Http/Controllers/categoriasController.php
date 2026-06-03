@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Categoria;
 
-
 class categoriasController extends Controller
 {
-
+    // El index viejo lo podemos dejar por si en el futuro lo necesitas para una API, 
+    // pero ya no se va a usar para la pantalla principal.
     public function index(Request $request) 
     {
         $query = Categoria::query();
@@ -39,8 +39,8 @@ class categoriasController extends Controller
             'activa' => $request->activa,
         ]);
 
-        // CORRECCIÓN: El nombre estándar que genera Route::resource es categorias.index
-        return redirect()->route('categorias.index'); 
+        // Redirige al panel maestro
+        return redirect('/panel_admin'); 
     }
 
     public function edit(string $id)
@@ -61,22 +61,22 @@ class categoriasController extends Controller
             'nombreCategoria' => $request->nombreCategoria,
         ]);
 
-        // CORRECCIÓN: categorias.index
-        return redirect()->route('categorias.index');
+        // Redirige al panel maestro
+        return redirect('/panel_admin');
     }
-public function activate(string $id)
+
+    public function activate(string $id)
     {
-        // 1. Buscamos la categoria por su ID
         $categoria = Categoria::findOrFail($id);
 
-        // 2. Simplemente la actualizamos forzando el 1 (activar)
         $categoria->update([
             'activa' => 1
         ]);
 
-        // 3. Recargamos la página
-        return redirect()->route('categorias.index');
+        // Redirige al panel maestro
+        return redirect('/panel_admin');
     }
+
     public function destroy(string $id)
     {
         $categoria = Categoria::findOrFail($id);
@@ -85,8 +85,7 @@ public function activate(string $id)
             'activa' => 0
         ]);
 
-        // CORRECCIÓN: categorias.index
-        return redirect()->route('categorias.index');
+        // Redirige al panel maestro
+        return redirect('/panel_admin');
     }
 }
-

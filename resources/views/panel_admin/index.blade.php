@@ -168,6 +168,7 @@
                     </div>
                     {{-- FIN DE GRILLA DE MARCAS --}}
                 </div>
+                
             </div>
 
 
@@ -180,7 +181,8 @@
         {{-- Lo colocamos fuera del foreach para que --}}
         {{-- solo se genere una vez en el HTML. --}}
         {{-- ========================================== --}}
-        <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+        <di
+        v class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
 
