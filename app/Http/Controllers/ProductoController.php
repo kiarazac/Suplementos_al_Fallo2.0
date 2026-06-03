@@ -15,7 +15,15 @@ class ProductoController extends Controller
     public function index(Request $request)
     {
         $productos = Producto::all();
-        $categorias = Categoria::all();
+       // --- FILTRO DE CATEGORÍAS ---
+        $queryCategorias = Categoria::query();
+        
+        // Usamos filled() en lugar de has() para asegurarnos de que el filtro ignore la opción "Todas" (valor vacío)
+        if ($request->filled('categoria_activa')) {
+            // ¡ACÁ ESTABA EL ERROR! Cambiamos 'activo' por 'activa' para que coincida con tu base de datos
+            $queryCategorias->where('activa', $request->categoria_activa);
+        }
+        $categorias = $queryCategorias->get();
 
         // Lógica para filtrar las marcas
         $query = Marca::query();

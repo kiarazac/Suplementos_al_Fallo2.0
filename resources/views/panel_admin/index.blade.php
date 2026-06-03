@@ -168,7 +168,97 @@
                     </div>
                     {{-- FIN DE GRILLA DE MARCAS --}}
                 </div>
-                
+                {{-- ========================================== --}}
+                {{-- PANTALLA DE CATEGORÍAS --}}
+                {{-- ========================================== --}}
+                <div class="tab-pane fade" id="pantalla-categorias" role="tabpanel">
+                    <h1 class="welcome-container text-center fs-0">
+                        Lista de Todas las Categorías
+                    </h1>
+
+                    {{-- SECCIÓN SUPERIOR: Filtros y Botón Crear --}}
+                    <div class="mb-4">
+                        <form method="GET" action="{{ route('panel_admin.index') }}">
+                            <div class="row align-items-end">
+                                {{-- FILTRO CATEGORÍA --}}
+                                <div class="col-md-5 mb-3">
+                                    {{-- ATENCIÓN: Usamos 'categoria_activa' --}}
+                                    <select name="categoria_activa" class="form-select">
+                                        <option value="" {{ request('categoria_activa') === null ? 'selected' : '' }}>Todas
+                                            las categorías</option>
+                                        <option value="1" {{ request('categoria_activa') === '1' ? 'selected' : '' }}>Activas
+                                        </option>
+                                        <option value="0" {{ request('categoria_activa') === '0' ? 'selected' : '' }}>
+                                            Inactivas</option>
+                                    </select>
+                                </div>
+
+                                {{-- BOTÓN FILTRAR --}}
+                                <div class="col-md-3 mb-3">
+                                    <button type="submit" class="btn btn-dark w-100">
+                                        Filtrar
+                                    </button>
+                                </div>
+
+                                {{-- BOTÓN CREAR NUEVA CATEGORÍA --}}
+                                <div class="col-md-4 mb-3">
+                                    <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal"
+                                        data-bs-target="#createCategoriaModal">
+                                        Crear Nueva Categoría
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    {{-- GRILLA DE CATEGORÍAS DINÁMICA --}}
+                    <div class="row g-4">
+                        @foreach($categorias as $categoria)
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="card h-100 bg-dark text-white border-secondary shadow-sm">
+                                    <div class="card-body d-flex flex-column">
+
+                                        {{-- CORRECCIÓN 1: nombreCategoria --}}
+                                        <h5 class="card-title fw-bold">{{ $categoria->nombreCategoria }}</h5>
+
+                                        {{-- CORRECCIÓN 2: activa --}}
+                                        @if($categoria->activa)
+                                            <p class="card-text text-success fs-6">Estado: Activa</p>
+                                        @else
+                                            <p class="card-text text-danger fs-6">Estado: Inactiva</p>
+                                        @endif
+
+                                        <div class="mt-auto d-flex gap-2">
+                                            <a href="{{ route('categorias.edit', $categoria->id) }}"
+                                                class="btn btn-sm btn-warning w-100">Editar</a>
+
+                                            {{-- CORRECCIÓN 3: activa --}}
+                                            @if($categoria->activa)
+                                                <form action="{{ route('categorias.destroy', $categoria->id) }}" method="POST"
+                                                    class="w-100">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-danger w-100">Eliminar</button>
+                                                </form>
+                                            @else
+                                                <form action="{{ route('categorias.activate', $categoria->id) }}" method="POST"
+                                                    class="w-100">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-success w-100">Activar</button>
+                                                </form>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    {{-- FIN DE GRILLA DE CATEGORÍAS --}}
+                </div>
+
+
+
+
             </div>
 
 
@@ -181,8 +271,7 @@
         {{-- Lo colocamos fuera del foreach para que --}}
         {{-- solo se genere una vez en el HTML. --}}
         {{-- ========================================== --}}
-        <di
-        v class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+        <di v class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
 
@@ -220,7 +309,51 @@
                     </form>
                 </div>
             </div>
+        </di>
+        {{-- ========================================== --}}
+        {{-- MODAL PARA CREAR NUEVA CATEGORÍA --}}
+        {{-- ========================================== --}}
+        <div class="modal fade" id="createCategoriaModal" tabindex="-1" aria-labelledby="createCategoriaModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    {{-- Apuntamos al método 'store' del controlador de Categorías --}}
+                    <form action="{{ route('categorias.store') }}" method="POST">
+                        @csrf
+
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="createCategoriaModalLabel">Crear Nueva Categoría</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            {{-- Campo Nombre (Ajustado a nombreCategoria) --}}
+                            <div class="mb-3">
+                                <label for="nombre_categoria_create" class="form-label">Nombre de la Categoría</label>
+                                <input type="text" class="form-control" id="nombre_categoria_create" name="nombreCategoria"
+                                    placeholder="Ej: Proteínas, Creatinas..." required>
+                            </div>
+
+                            {{-- Campo Estado (Ajustado a activa) --}}
+                            <div class="mb-3">
+                                <label for="activa_categoria_create" class="form-label">Estado Inicial</label>
+                                <select class="form-select" id="activa_categoria_create" name="activa" required>
+                                    <option value="1" selected>Activa (Visible)</option>
+                                    <option value="0">Inactiva (Oculta)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Crear Categoría</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
+
     </main>
 @endsection
 
