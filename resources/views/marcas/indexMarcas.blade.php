@@ -23,7 +23,7 @@
             
             {{-- SECCIÓN SUPERIOR: Filtros y Botón Crear --}}
             <div class="mb-4">
-                <form method="GET" action="{{ route('marcas.index') }}">
+                <form method="GET" action="{{ route('panel_admin.index') }}">
                     <div class="row align-items-end">
                         {{-- FILTRO CATEGORÍA --}}
                         <div class="col-md-5 mb-3">
