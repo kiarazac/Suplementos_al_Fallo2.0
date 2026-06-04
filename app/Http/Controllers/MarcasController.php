@@ -58,10 +58,11 @@ class MarcasController extends Controller
 
         $marca->update([
             'nombre' => $request->nombre,
+            'activo' => $request->activo,
         ]);
 
         // CORRECCIÓN: marcas.index
-        return redirect()->route('marcas.index');
+        return redirect()->back();
     }
 public function activate(string $id)
     {
@@ -74,7 +75,7 @@ public function activate(string $id)
         ]);
 
         // 3. Recargamos la página
-        return redirect()->route('marcas.index');
+        return redirect()->back();
     }
     public function destroy(string $id)
     {
@@ -85,6 +86,6 @@ public function activate(string $id)
         ]);
 
         // CORRECCIÓN: marcas.index
-        return redirect()->route('marcas.index');
+        return redirect()->back();
     }
 }
