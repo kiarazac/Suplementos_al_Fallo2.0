@@ -7,7 +7,7 @@ use App\Models\Marca;
 
 class MarcasController extends Controller
 {
-    public function index(Request $request) 
+    public function index(Request $request)
     {
         $query = Marca::query();
 
@@ -22,7 +22,7 @@ class MarcasController extends Controller
 
     public function create()
     {
-        return view('marcas.create');
+        return redirect('/panel_admin');
     }
 
     public function store(Request $request)
@@ -38,13 +38,13 @@ class MarcasController extends Controller
         ]);
 
         // CORRECCIÓN: El nombre estándar que genera Route::resource es marcas.index
-        return redirect()->route('marcas.index'); 
+        return redirect('/panel_admin');
+        // (Aplica esto en store, update, activate y destroy del MarcasController)
     }
 
     public function edit(string $id)
     {
-        $marca = Marca::findOrFail($id);
-        return view('marcas.edit', compact('marca'));
+        return redirect('/panel_admin');
     }
 
     public function update(Request $request, string $id)
@@ -61,10 +61,10 @@ class MarcasController extends Controller
             'activo' => $request->activo,
         ]);
 
-        // CORRECCIÓN: marcas.index
-        return redirect()->back();
+        return redirect('/panel_admin');
+        // (Aplica esto en store, update, activate y destroy del MarcasController)
     }
-public function activate(string $id)
+    public function activate(string $id)
     {
         // 1. Buscamos la marca por su ID
         $marca = Marca::findOrFail($id);
@@ -74,8 +74,8 @@ public function activate(string $id)
             'activo' => 1
         ]);
 
-        // 3. Recargamos la página
-        return redirect()->back();
+        return redirect('/panel_admin');
+        // (Aplica esto en store, update, activate y destroy del MarcasController)
     }
     public function destroy(string $id)
     {
@@ -85,7 +85,8 @@ public function activate(string $id)
             'activo' => 0
         ]);
 
-        // CORRECCIÓN: marcas.index
-        return redirect()->back();
+
+        return redirect('/panel_admin');
+        // (Aplica esto en store, update, activate y destroy del MarcasController)
     }
 }

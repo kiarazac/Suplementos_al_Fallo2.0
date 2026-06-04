@@ -186,8 +186,7 @@
 
                                 <div class="mt-auto d-flex gap-2">
                                     {{-- El botón de editar siempre lleva a la ruta edit --}}
-                                    <a href="{{ route('marcas.edit', $marca->id) }}"
-                                        class="btn btn-sm btn-warning w-100">Editar</a>
+                                    <button type="button" class="btn btn-sm btn-warning w-100" data-bs-toggle="modal" data-bs-target="#editMarcaModal{{ $marca->id }}">Editar</button>
 
                                     @if($marca->activo)
                                     {{-- Si está activa (1), mostramos el botón rojo que ejecuta el destroy (pasar a 0)
@@ -204,6 +203,7 @@
                                     <form action="{{ route('marcas.activate', $marca->id) }}" method="POST"
                                         class="w-100">
                                         @csrf
+                                        @method('PATCH')
                                         <button type="submit" class="btn btn-sm btn-success w-100">Activar</button>
                                     </form>
                                     @endif
@@ -211,7 +211,38 @@
                             </div>
                         </div>
                     </div>
-                    @endforeach
+                {{-- MODAL DE EDICIÓN DE MARCA --}}
+                <div class="modal fade" id="editMarcaModal{{ $marca->id }}" tabindex="-1" aria-labelledby="editMarcaModalLabel{{ $marca->id }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form action="{{ route('marcas.update', $marca->id) }}" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editMarcaModalLabel{{ $marca->id }}">Editar Marca</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="nombre_marca_{{ $marca->id }}" class="form-label">Nombre de la Marca</label>
+                                        <input type="text" class="form-control" id="nombre_marca_{{ $marca->id }}" name="nombre" value="{{ $marca->nombre }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="activo_marca_{{ $marca->id }}" class="form-label">Estado</label>
+                                        <select class="form-select" id="activo_marca_{{ $marca->id }}" name="activo" required>
+                                            <option value="1" {{ $marca->activo ? 'selected' : '' }}>Activa</option>
+                                            <option value="0" {{ !$marca->activo ? 'selected' : '' }}>Inactiva</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>                    @endforeach
 
                 </div>
                 {{-- FIN DE GRILLA DE MARCAS --}}
@@ -277,8 +308,7 @@
                                 @endif
 
                                 <div class="mt-auto d-flex gap-2">
-                                    <a href="{{ route('categorias.edit', $categoria->id) }}"
-                                        class="btn btn-sm btn-warning w-100">Editar</a>
+                                    <button type="button" class="btn btn-sm btn-warning w-100" data-bs-toggle="modal" data-bs-target="#editCategoriaModal{{ $categoria->id }}">Editar</button>
 
                                     {{-- CORRECCIÓN 3: activa --}}
                                     @if($categoria->activa)
@@ -292,10 +322,44 @@
                                     <form action="{{ route('categorias.activate', $categoria->id) }}" method="POST"
                                         class="w-100">
                                         @csrf
+                                        @method('PATCH')
                                         <button type="submit" class="btn btn-sm btn-success w-100">Activar</button>
                                     </form>
                                     @endif
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- MODAL DE EDICIÓN DE CATEGORÍA --}}
+                    <div class="modal fade" id="editCategoriaModal{{ $categoria->id }}" tabindex="-1" aria-labelledby="editCategoriaModalLabel{{ $categoria->id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form action="{{ route('categorias.update', $categoria->id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editCategoriaModalLabel{{ $categoria->id }}">Editar Categoría</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="nombre_categoria_{{ $categoria->id }}" class="form-label">Nombre de la Categoría</label>
+                                            <input type="text" class="form-control" id="nombre_categoria_{{ $categoria->id }}" name="nombreCategoria" value="{{ $categoria->nombreCategoria }}" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="activa_categoria_{{ $categoria->id }}" class="form-label">Estado</label>
+                                            <select class="form-select" id="activa_categoria_{{ $categoria->id }}" name="activa" required>
+                                                <option value="1" {{ $categoria->activa ? 'selected' : '' }}>Activa</option>
+                                                <option value="0" {{ !$categoria->activa ? 'selected' : '' }}>Inactiva</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -319,7 +383,7 @@
     {{-- Lo colocamos fuera del foreach para que --}}
     {{-- solo se genere una vez en el HTML. --}}
     {{-- ========================================== --}}
-    <di v class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
 
@@ -357,7 +421,7 @@
                 </form>
             </div>
         </div>
-    </di>
+    </div>
     {{-- ========================================== --}}
     {{-- MODAL PARA CREAR NUEVA CATEGORÍA --}}
     {{-- ========================================== --}}

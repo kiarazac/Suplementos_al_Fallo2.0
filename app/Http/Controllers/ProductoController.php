@@ -16,25 +16,24 @@ class ProductoController extends Controller
     public function index(Request $request)
     {
         $productos = Producto::all();
+        
         // --- FILTRO DE CATEGORÍAS ---
         $queryCategorias = Categoria::query();
-
-        // Usamos filled() en lugar de has() para asegurarnos de que el filtro ignore la opción "Todas" (valor vacío)
         if ($request->filled('categoria_activa')) {
-            // ¡ACÁ ESTABA EL ERROR! Cambiamos 'activo' por 'activa' para que coincida con tu base de datos
             $queryCategorias->where('activa', $request->categoria_activa);
         }
         $categorias = $queryCategorias->get();
 
-        // Lógica para filtrar las marcas
-        $query = Marca::query();
-
-        if ($request->has('activo') && $request->activo !== null) {
-            $query->where('activo', $request->activo);
+        // --- FILTRO DE MARCAS ---
+        $queryMarcas = Marca::query();
+        if ($request->filled('activo')) {
+            $queryMarcas->where('activo', $request->activo);
         }
+        $marcas = $queryMarcas->get();
 
-        $marcas = $query->get();
+        // --- PEDIDOS --- (Ordenados de más nuevo a más viejo)
         $pedidos = Pedido::orderBy('created_at', 'desc')->get();
+
         return view('panel_admin.index', compact('productos', 'marcas', 'categorias', 'pedidos'));
     }
     /**

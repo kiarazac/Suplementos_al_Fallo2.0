@@ -24,7 +24,7 @@ class categoriasController extends Controller
 
     public function create()
     {
-        return view('categorias.create');
+        return redirect('/panel_admin');
     }
 
     public function store(Request $request)
@@ -45,20 +45,21 @@ class categoriasController extends Controller
 
     public function edit(string $id)
     {
-        $categoria = Categoria::findOrFail($id);
-        return view('categorias.edit', compact('categoria'));
+        return redirect('/panel_admin');
     }
 
     public function update(Request $request, string $id)
     {
         $request->validate([
             'nombreCategoria' => 'required|max:255',
+            'activa' => 'boolean',
         ]);
 
         $categoria = Categoria::findOrFail($id);
 
         $categoria->update([
             'nombreCategoria' => $request->nombreCategoria,
+            'activa' => $request->activa,
         ]);
 
         // Redirige al panel maestro
