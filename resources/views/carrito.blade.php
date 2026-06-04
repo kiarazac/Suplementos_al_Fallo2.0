@@ -5,11 +5,21 @@
 
 @section('content')
 <div class="h-100">
-    <h1>CARRITO DE COMPRAS</h1>
-    <div class="container py-5">
+    <h1 class="text-center mt-4">CARRITO DE COMPRAS</h1>
+    
+    {{-- NUEVO: Bloque que muestra el titular de la compra --}}
+    @auth
+    <div class="text-center mt-2">
+        <h4 class="text-warning">
+            Titular de la compra: <span class="text-light fw-bold">{{ Auth::user()->name }}</span>
+        </h4>
+    </div>
+    @endauth
+
+    <div class="container py-4">
 
         {{-- CONTENEDOR PRODUCTOS --}}
-        <div class="container-fluid text-center text-light mt-5">
+        <div class="container-fluid text-center text-light mt-4">
             <div class="row mb-3 gy-md-4 gx-md-0">
 
                 @if(!$pedido || $pedido->detalle_pedidos->isEmpty())

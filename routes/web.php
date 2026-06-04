@@ -130,13 +130,17 @@ Route::get(
     [CatalogoController::class, 'index']
 )->name('catalogo.index');
 
+Route::get('/listado_pedidos/{id}', [PedidoController::class, 'listadoPedidos'])
+    ->middleware('auth')->name('listado_pedidos');
 
 
 // 1. NUEVA RUTA PARA ACTIVAR (Debe ir primero)
 // Todo lo que esté dentro de este grupo pasará por tu AdminMiddleware
 Route::middleware([AdminMiddleware::class])->group(function () {
     Route::resource('/panel_admin', ProductoController::class)->names('panel_admin');
-    
+    // RUTA PARA DESPACHAR PEDIDOS
+    Route::patch('/pedidos_Admin/{id}/entregar', [PedidoController::class, 'entregarPedido'])->name('pedidos.entregar');
+
     // ==========================================
     // RUTAS DE MARCAS
     // ==========================================
@@ -148,5 +152,4 @@ Route::middleware([AdminMiddleware::class])->group(function () {
     // ==========================================
     Route::patch('/categorias_Admin/{id}/activate', [CategoriasController::class, 'activate'])->name('categorias.activate');
     Route::resource('categorias_Admin', CategoriasController::class)->names('categorias');
-
 });

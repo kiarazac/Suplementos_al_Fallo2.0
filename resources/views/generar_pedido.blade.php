@@ -33,14 +33,29 @@
                         <h5 class="card-title text-primary"><i class="bi bi-truck"></i> Datos de Entrega en Corrientes (Capital)</h5>
                         <p class="card-text text-muted small">Los envíos se realizan únicamente dentro de la Ciudad de Corrientes.</p>
 
-                        <div class="mb-3">
-                            <label for="direccion" class="form-label fw-bold">Dirección de Entrega (Calle, Número, Piso/Depto):</label>
-                            <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Ej: Junín 1234, Piso 2 Depto B">
+                        {{-- Opciones de Dirección (Radio Buttons) --}}
+                        <div class="mb-3 p-3 border bg-dark text-light rounded">
+                            <label class="form-label fw-bold mb-3">¿Dónde enviamos tu pedido?</label>
+
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="opcion_direccion" id="dir_registrada" value="registrada">
+                                <label class="form-check-label" for="dir_registrada">
+                                    A mi dirección registrada: <span class="text-danger fw-bold">{{ Auth::user()->direccion}}</span>
+                                </label>
+                            </div>
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="opcion_direccion" id="dir_otra" value="otra">
+                                <label class="form-check-label" for="dir_otra">
+                                    Ingresar otra dirección
+                                </label>
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="referencias" class="form-label">Referencias (Opcional):</label>
-                            <textarea class="form-control" id="referencias" name="referencias" rows="2" placeholder="Ej: Entre Mendoza y Córdoba, portón negro..."></textarea>
+                        {{-- Input para la dirección final (Oculto hasta que se elija 'otra') --}}
+                        <div id="bloque_input_direccion" class="mb-3 d-none">
+                            <label for="lugar_de_entrega" class="form-label fw-bold text-danger">Escribe la nueva dirección de entrega:</label>
+                            <input type="text" class="form-control border-danger" id="lugar_de_entrega" name="lugar_de_entrega" placeholder="Ej: Junín 1234, Piso 2 Depto B">
                         </div>
                     </div>
                 </div>
@@ -56,58 +71,72 @@
                 </div>
 
                 {{-- BOTÓN DE ENVÍO --}}
-                <div class="row justify-content-center">
-                    <div class="col-4"></div>
-                    <div class="col-4">
-                        <div class="d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-warning btn-lg fw-bold">
-                                Confirmar y Registrar Pedido <i class="bi bi-check-circle"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="col-4"></div>
-                    <div class="row mt-3">
-                        <a href="{{ route('carrito.index') }}" class="btn btn-outline-secondary text-light">Volver al Carrito</a>
+                <div class="row justify-content-center bg-dark">
+                    <div class="col-md-6 text-center">
+                        <button type="submit" class="btn btn-warning btn-lg fw-bold w-100 mb-3">
+                            Confirmar y Registrar Pedido <i class="bi bi-check-circle"></i>
+                        </button>
+                        <a href="{{ route('carrito.index') }}" class="btn btn-outline-secondary text-light w-100">Volver al Carrito</a>
                     </div>
                 </div>
-
-
-
-
             </form>
         </div>
     </div>
 </div>
 
-{{-- LÓGICA JAVASCRIPT PARA MOSTRAR/OCULTAR SECCIONES --}}
+{{-- LÓGICA JAVASCRIPT --}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const selectMetodo = document.getElementById('metodo_entrega');
         const bloqueEnvio = document.getElementById('bloque_envio');
         const bloqueRetiro = document.getElementById('bloque_retiro');
-        const inputDireccion = document.getElementById('direccion');
 
+        const radioRegistrada = document.getElementById('dir_registrada');
+        const radioOtra = document.getElementById('dir_otra');
+        const bloqueInputDireccion = document.getElementById('bloque_input_direccion');
+        const inputLugarEntrega = document.getElementById('lugar_de_entrega');
+
+        // Traemos la dirección del usuario desde PHP de forma segura
+        const direccionUsuario = @json(Auth::user()->direccion ?? '');
+
+        // 1. Lógica principal al cambiar Método de Entrega
         selectMetodo.addEventListener('change', function() {
             if (this.value === 'envio') {
-                // Mostrar envío, ocultar retiro
                 bloqueEnvio.classList.remove('d-none');
                 bloqueRetiro.classList.add('d-none');
 
-                // Hacer obligatorio el campo de dirección si es envío
-                inputDireccion.setAttribute('required', 'required');
+                // Por defecto, seleccionamos la dirección registrada
+                radioRegistrada.checked = true;
+                bloqueInputDireccion.classList.add('d-none');
+                inputLugarEntrega.value = direccionUsuario;
+                inputLugarEntrega.removeAttribute('required');
+
             } else if (this.value === 'retiro') {
-                // Mostrar retiro, ocultar envío
                 bloqueRetiro.classList.remove('d-none');
                 bloqueEnvio.classList.add('d-none');
 
-                // Quitar la obligatoriedad y limpiar el campo de dirección
-                inputDireccion.removeAttribute('required');
-                inputDireccion.value = '';
-            } else {
-                // Por si vuelve a la opción vacía
-                bloqueEnvio.classList.add('d-none');
-                bloqueRetiro.classList.add('d-none');
-                inputDireccion.removeAttribute('required');
+                // Si retira en local, asignamos ese valor al input para la base de datos
+                inputLugarEntrega.value = 'local';
+                inputLugarEntrega.removeAttribute('required');
+            }
+        });
+
+        // 2. Lógica si elige "Dirección Registrada"
+        radioRegistrada.addEventListener('change', function() {
+            if (this.checked) {
+                bloqueInputDireccion.classList.add('d-none');
+                inputLugarEntrega.value = direccionUsuario;
+                inputLugarEntrega.removeAttribute('required');
+            }
+        });
+
+        // 3. Lógica si elige "Otra Dirección"
+        radioOtra.addEventListener('change', function() {
+            if (this.checked) {
+                bloqueInputDireccion.classList.remove('d-none');
+                inputLugarEntrega.value = ''; // Limpiamos para que escriba
+                inputLugarEntrega.setAttribute('required', 'required'); // Hacemos obligatorio el campo
+                inputLugarEntrega.focus(); // Llevamos el cursor al input automáticamente
             }
         });
     });

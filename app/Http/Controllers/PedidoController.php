@@ -22,6 +22,18 @@ class PedidoController extends Controller
             compact('pedido')
         );
     }
+
+    public function listadoPedidos($id)
+    {
+        $pedidos = Pedido::with('detalle_pedidos.producto')
+            ->where('cliente_id', $id)
+            ->get();
+
+        return view(
+            'listado_pedidos',
+            compact('pedidos')
+        );
+    }
     public function show(Producto $producto)
     {
         return view(
@@ -51,15 +63,13 @@ class PedidoController extends Controller
             ->first();
 
         // SI NO EXISTE CARRITO → CREARLO
+        // SI NO EXISTE CARRITO → CREARLO
         if (!$pedido) {
             $pedido = Pedido::create([
-
                 'cliente_id' => Auth::id(),
-
+                'titular_compra' => Auth::user()->name, // <-- AGREGAMOS ESTO
                 'estado' => 'carrito',
-
                 'total' => 0
-
             ]);
         }
 
@@ -116,15 +126,16 @@ class PedidoController extends Controller
     {
         $detalle = DetallePedido::findOrFail($id);
 
-        $pedido = $detalle->pedido;
+        $pedido = Pedido::findOrFail($detalle->pedido_id);
 
         $detalle->delete();
-
+        
         if ($pedido->detalle_pedidos()->count() == 0) {
             $pedido->delete();
             // En vez de return back(), mandalo al catálogo
-            return redirect()->route('catalogo.index')->with('info', 'Tu carrito está vacío.');
+            return redirect()->route('catalogo.index');
         }
+        return redirect()->back();
     }
     public function eliminarTodo($id)
     {
@@ -155,18 +166,30 @@ class PedidoController extends Controller
 
         return view('generar_pedido', compact('pedido'));
     }
-    public function confirmarPedido($id)
+    public function confirmarPedido($id, Request $request)
     {
         $pedido = Pedido::findOrFail($id);
 
         if ($pedido->estado == 'confirmado') {
             return redirect()->back()->with('error', 'El pedido ya ha sido confirmado');
         }
-
+        $pedido->lugar_de_entrega = $request->lugar_de_entrega;
         $pedido->estado = 'confirmado';
         $pedido->save();
 
         // Usar 303 See Other para forzar que el navegador realice un GET al home
         return redirect()->route('catalogo.index')->setStatusCode(303)->with('success', 'Pedido confirmado correctamente');
+    }
+
+    public function entregarPedido($id){
+        $pedido = Pedido::findOrFail($id);
+
+        if ($pedido->estado == 'entregado') {
+            return redirect()->back()->with('error', 'El pedido ya ha sido entregado');
+        }
+        $pedido->estado = 'entregado';
+        $pedido->save();
+
+        return redirect()->back();
     }
 }
