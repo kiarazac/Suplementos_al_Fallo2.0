@@ -161,7 +161,7 @@
                     {{-- IMAGEN --}}
                     <img
 
-                        src="{{ asset($producto->imagen) }}"
+                        src="{{ asset('imagenes/productos/' . $producto->imagen) }}"
 
                         class="card-img-top producto"
 
