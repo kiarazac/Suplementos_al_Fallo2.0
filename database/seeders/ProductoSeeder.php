@@ -95,7 +95,7 @@ Producto::create([
         'nombre' => 'Gold Nutrition preentreno', 
         'precio' => '59.99', 
         'categoria_id' => 3, 
-        'marca_id' => 2, 
+        'marca_id' => 3, 
         'descripcion' => 'Preentreno de alta calidad', 
         'stock' => 50, 
         'imagen' => 'Pre-entreno/pre-work_gold_nutrition.jpg', // <-- Agregada la subcarpeta
@@ -106,7 +106,7 @@ Producto::create([
         'nombre' => 'Insane Labs preentreno', 
         'precio' => '59.99', 
         'categoria_id' => 3, 
-        'marca_id' => 3, 
+        'marca_id' => 2, 
         'descripcion' => 'Preentreno de alta calidad', 
         'stock' => 50, 
         'imagen' => 'Pre-entreno/Psychotic-Black-Fruit-Punch-Front.jpg', // <-- Agregada la subcarpeta
