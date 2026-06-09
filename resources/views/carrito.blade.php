@@ -48,7 +48,7 @@
                 @foreach($pedido->detalle_pedidos as $detalle_pedido)
                 <div class="col-6 col-md-4 d-flex justify-content-center">
                     <div class="card mb-3 mt-3 h-100" style="width: 18rem;">
-                        <img src="{{ asset($detalle_pedido->producto->imagen) }}" class="card-img-top producto" alt="{{ $detalle_pedido->producto->nombre }}">
+                        <img src="{{ asset('imagenes/productos/' . $detalle_pedido->producto->imagen) }}" class="card-img-top producto" alt="{{ $detalle_pedido->producto->nombre }}">
 
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title fw-bold text-black">${{ $detalle_pedido->subtotal }}</h5>
