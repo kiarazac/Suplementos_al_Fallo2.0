@@ -6,6 +6,8 @@ use App\Models\Producto;
 use App\Models\Categoria;
 use App\Models\Marca;
 use App\Models\Pedido;
+use App\Models\Consulta;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ProductoController extends Controller
@@ -34,7 +36,11 @@ class ProductoController extends Controller
         // --- PEDIDOS --- (Ordenados de más nuevo a más viejo)
         $pedidos = Pedido::orderBy('created_at', 'desc')->get();
 
-        return view('panel_admin.index', compact('productos', 'marcas', 'categorias', 'pedidos'));
+        $consultas = Consulta::orderBy('created_at', 'desc')->get();
+
+        $usuarios = User::orderBy('created_at', 'desc')->get();
+
+        return view('panel_admin.index', compact('productos', 'marcas', 'categorias', 'pedidos', 'consultas', 'usuarios'));
     }
     /**
      * Show the form for creating a new resource.

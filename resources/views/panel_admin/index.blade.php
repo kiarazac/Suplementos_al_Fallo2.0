@@ -8,11 +8,12 @@
 
 @section('content')
 
-<main>
-    <div class="d-flex align-items-start">
+@section('content')
 
-        <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark border-end border-secondary"
-            style="width: 280px; min-height: calc(100vh - 60px);">
+<main class="w-100">
+    <div class="d-flex w-100">
+
+        <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark border-end border-secondary" style="width: 280px; min-height: calc(100vh - 60px);">
             <ul class="nav nav-pills flex-column mb-auto" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link text-white w-100 text-start" data-bs-toggle="pill"
@@ -34,6 +35,10 @@
                     <button class="nav-link text-white w-100 text-start" data-bs-toggle="pill"
                         data-bs-target="#pantalla-categorias" type="button" role="tab">Categorías</button>
                 </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link text-white w-100 text-start" data-bs-toggle="pill"
+                        data-bs-target="#pantalla-consultas" type="button" role="tab">Consultas</button>
+                </li>
             </ul>
         </div>
         <div class="tab-content flex-grow-1 p-4 overflow-auto" id="v-pills-tabContent" style="max-height: calc(100vh - 60px);">
@@ -50,7 +55,7 @@
                             <div class="card-body d-flex flex-column text-center">
 
                                 <h4 class="card-title fw-bold mb-3">Pedido #{{ $pedido->id }}</h4>
-<p class="card-text mb-2 text-light fs-6">
+                                <p class="card-text mb-2 text-light fs-6">
                                     <i class="bi bi-person-circle fs-3"></i> Cliente:{{ $pedido->titular_compra}}
                                 </p>
                                 <p class="card-text mb-2 text-light fs-6">
@@ -92,8 +97,49 @@
             </div>
 
             <div class="tab-pane fade" id="pantalla-dashboard" role="tabpanel">
-                <h1 class="text-white">Panel de Control</h1>
-                <p class="text-white-50">Resumen de ventas, usuarios, etc.</p>
+                <h1 class="text-white mb-4">Panel de Control</h1>
+
+                {{-- Cambiamos w-100 por g-4 para manejar la separación de forma nativa --}}
+                <div class="row g-4">
+                    
+                    {{-- Tarjeta: Usuarios Registrados --}}
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        {{-- Eliminamos el min-width que forzaba el desborde --}}
+                        <div class="card h-100 bg-dark text-white border-secondary shadow-sm p-4" style="min-width: 280px;">
+                            <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+                                <h5 class="card-title text-white-50 mb-3">Usuarios Registrados</h5>
+                                <p class="card-text fs-2 fw-bold m-0 text-info">{{ $usuarios->count() }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Tarjeta: Ventas Confirmadas --}}
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="card h-100 bg-dark text-white border-secondary shadow-sm p-4" style="min-width: 280px;">
+                            <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+                                <h5 class="card-title text-white-50 mb-3">Pedidos Confirmados</h5>
+                                <p class="card-text fs-2 fw-bold m-0 text-success">{{ $pedidos->where('estado', 'confirmado')->count() }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="card h-100 bg-dark text-white border-secondary shadow-sm p-4" style="min-width: 280px;">
+                            <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+                                <h5 class="card-title text-white-50 mb-3">Pedidos en Carrito</h5>
+                                <p class="card-text fs-2 fw-bold m-0 text-success">{{ $pedidos->where('estado', 'carrito')->count() }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="card h-100 bg-dark text-white border-secondary shadow-sm p-4" style="min-width: 280px;">
+                            <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+                                <h5 class="card-title text-white-50 mb-3">Pedidos Entregados</h5>
+                                <p class="card-text fs-2 fw-bold m-0 text-success">{{ $pedidos->where('estado', 'entregado')->count() }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div> {{-- FIN DEL ROW --}}
             </div>
 
             <div class="tab-pane fade show active" id="pantalla-productos" role="tabpanel">
@@ -211,38 +257,38 @@
                             </div>
                         </div>
                     </div>
-                {{-- MODAL DE EDICIÓN DE MARCA --}}
-                <div class="modal fade" id="editMarcaModal{{ $marca->id }}" tabindex="-1" aria-labelledby="editMarcaModalLabel{{ $marca->id }}" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <form action="{{ route('marcas.update', $marca->id) }}" method="POST">
-                                @csrf
-                                @method('PUT')
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="editMarcaModalLabel{{ $marca->id }}">Editar Marca</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <label for="nombre_marca_{{ $marca->id }}" class="form-label">Nombre de la Marca</label>
-                                        <input type="text" class="form-control" id="nombre_marca_{{ $marca->id }}" name="nombre" value="{{ $marca->nombre }}" required>
+                    {{-- MODAL DE EDICIÓN DE MARCA --}}
+                    <div class="modal fade" id="editMarcaModal{{ $marca->id }}" tabindex="-1" aria-labelledby="editMarcaModalLabel{{ $marca->id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form action="{{ route('marcas.update', $marca->id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editMarcaModalLabel{{ $marca->id }}">Editar Marca</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="activo_marca_{{ $marca->id }}" class="form-label">Estado</label>
-                                        <select class="form-select" id="activo_marca_{{ $marca->id }}" name="activo" required>
-                                            <option value="1" {{ $marca->activo ? 'selected' : '' }}>Activa</option>
-                                            <option value="0" {{ !$marca->activo ? 'selected' : '' }}>Inactiva</option>
-                                        </select>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="nombre_marca_{{ $marca->id }}" class="form-label">Nombre de la Marca</label>
+                                            <input type="text" class="form-control" id="nombre_marca_{{ $marca->id }}" name="nombre" value="{{ $marca->nombre }}" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="activo_marca_{{ $marca->id }}" class="form-label">Estado</label>
+                                            <select class="form-select" id="activo_marca_{{ $marca->id }}" name="activo" required>
+                                                <option value="1" {{ $marca->activo ? 'selected' : '' }}>Activa</option>
+                                                <option value="0" {{ !$marca->activo ? 'selected' : '' }}>Inactiva</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                                </div>
-                            </form>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                    </div>
-                </div>                    @endforeach
+                    </div> @endforeach
 
                 </div>
                 {{-- FIN DE GRILLA DE MARCAS --}}
@@ -366,105 +412,127 @@
                     @endforeach
                 </div>
                 {{-- FIN DE GRILLA DE CATEGORÍAS --}}
+            </div> {{-- <-- ESTE DIV CIERRA LA PANTALLA-CATEGORIAS --}}
+
+            {{-- ========================================== --}}
+            {{-- PANTALLA DE CONSULTAS --}}
+            {{-- ========================================== --}}
+            <div class="tab-pane fade" id="pantalla-consultas" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="text-white m-0">Listado de Consultas</h1>
+                </div>
+
+                {{-- LA FILA (ROW) DEBE IR FUERA DEL BUCLE --}}
+                <div class="row g-4 w-100 mt-2">
+
+                    @foreach($consultas as $consulta)
+                    <div class="col-12 col-md-6 col-lg-6"> {{-- Cambié col-6 por col-12 para celulares --}}
+                        {{-- Quité el min-width: 480px porque rompía el diseño en pantallas chicas --}}
+                        <div class="card h-100 bg-dark text-white border-secondary shadow-sm">
+                            <div class="card-body">
+                                {{-- Asegurate de que los nombres coincidan con tus columnas en la BD --}}
+                                <h4 class="card-title text-warning">{{ $consulta->nombreCompleto }}</h4>
+                                <h6 class="card-subtitle mb-3 text-white-50">{{ $consulta->email }}</h6>
+
+                                <hr class="border-secondary">
+
+                                <p class="card-text" style="text-align: justify;">{{ $consulta->Mensaje }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+
+                </div> {{-- FIN DEL ROW --}}
             </div>
 
-
-
-
         </div>
+        {{-- ========================================== --}}
+        {{-- MODAL PARA CREAR NUEVA MARCA --}}
+        {{-- Lo colocamos fuera del foreach para que --}}
+        {{-- solo se genere una vez en el HTML. --}}
+        {{-- ========================================== --}}
+        <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
 
+                    {{-- Apuntamos al método 'store' usando POST para guardar en BD --}}
+                    <form action="{{ route('marcas.store') }}" method="POST">
+                        @csrf
 
-
-    </div>
-
-    </div>
-    {{-- ========================================== --}}
-    {{-- MODAL PARA CREAR NUEVA MARCA --}}
-    {{-- Lo colocamos fuera del foreach para que --}}
-    {{-- solo se genere una vez en el HTML. --}}
-    {{-- ========================================== --}}
-    <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-                {{-- Apuntamos al método 'store' usando POST para guardar en BD --}}
-                <form action="{{ route('marcas.store') }}" method="POST">
-                    @csrf
-
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="createModalLabel">Crear Nueva Marca</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                    </div>
-
-                    <div class="modal-body">
-                        {{-- Campo Nombre --}}
-                        <div class="mb-3">
-                            <label for="nombre_create" class="form-label">Nombre de la Marca</label>
-                            <input type="text" class="form-control" id="nombre_create" name="nombre"
-                                placeholder="Ej: Nike, Adidas..." required>
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="createModalLabel">Crear Nueva Marca</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                         </div>
 
-                        {{-- Campo Estado (Activo/Inactivo) --}}
-                        <div class="mb-3">
-                            <label for="activo_create" class="form-label">Estado Inicial</label>
-                            <select class="form-select" id="activo_create" name="activo" required>
-                                <option value="1" selected>Activa (Visible)</option>
-                                <option value="0">Inactiva (Oculta)</option>
-                            </select>
-                        </div>
-                    </div>
+                        <div class="modal-body">
+                            {{-- Campo Nombre --}}
+                            <div class="mb-3">
+                                <label for="nombre_create" class="form-label">Nombre de la Marca</label>
+                                <input type="text" class="form-control" id="nombre_create" name="nombre"
+                                    placeholder="Ej: Nike, Adidas..." required>
+                            </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Crear Marca</button>
-                    </div>
-                </form>
+                            {{-- Campo Estado (Activo/Inactivo) --}}
+                            <div class="mb-3">
+                                <label for="activo_create" class="form-label">Estado Inicial</label>
+                                <select class="form-select" id="activo_create" name="activo" required>
+                                    <option value="1" selected>Activa (Visible)</option>
+                                    <option value="0">Inactiva (Oculta)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Crear Marca</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-    {{-- ========================================== --}}
-    {{-- MODAL PARA CREAR NUEVA CATEGORÍA --}}
-    {{-- ========================================== --}}
-    <div class="modal fade" id="createCategoriaModal" tabindex="-1" aria-labelledby="createCategoriaModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
+        {{-- ========================================== --}}
+        {{-- MODAL PARA CREAR NUEVA CATEGORÍA --}}
+        {{-- ========================================== --}}
+        <div class="modal fade" id="createCategoriaModal" tabindex="-1" aria-labelledby="createCategoriaModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
 
-                {{-- Apuntamos al método 'store' del controlador de Categorías --}}
-                <form action="{{ route('categorias.store') }}" method="POST">
-                    @csrf
+                    {{-- Apuntamos al método 'store' del controlador de Categorías --}}
+                    <form action="{{ route('categorias.store') }}" method="POST">
+                        @csrf
 
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="createCategoriaModalLabel">Crear Nueva Categoría</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                    </div>
-
-                    <div class="modal-body">
-                        {{-- Campo Nombre (Ajustado a nombreCategoria) --}}
-                        <div class="mb-3">
-                            <label for="nombre_categoria_create" class="form-label">Nombre de la Categoría</label>
-                            <input type="text" class="form-control" id="nombre_categoria_create" name="nombreCategoria"
-                                placeholder="Ej: Proteínas, Creatinas..." required>
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="createCategoriaModalLabel">Crear Nueva Categoría</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                         </div>
 
-                        {{-- Campo Estado (Ajustado a activa) --}}
-                        <div class="mb-3">
-                            <label for="activa_categoria_create" class="form-label">Estado Inicial</label>
-                            <select class="form-select" id="activa_categoria_create" name="activa" required>
-                                <option value="1" selected>Activa (Visible)</option>
-                                <option value="0">Inactiva (Oculta)</option>
-                            </select>
-                        </div>
-                    </div>
+                        <div class="modal-body">
+                            {{-- Campo Nombre (Ajustado a nombreCategoria) --}}
+                            <div class="mb-3">
+                                <label for="nombre_categoria_create" class="form-label">Nombre de la Categoría</label>
+                                <input type="text" class="form-control" id="nombre_categoria_create" name="nombreCategoria"
+                                    placeholder="Ej: Proteínas, Creatinas..." required>
+                            </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Crear Categoría</button>
-                    </div>
-                </form>
+                            {{-- Campo Estado (Ajustado a activa) --}}
+                            <div class="mb-3">
+                                <label for="activa_categoria_create" class="form-label">Estado Inicial</label>
+                                <select class="form-select" id="activa_categoria_create" name="activa" required>
+                                    <option value="1" selected>Activa (Visible)</option>
+                                    <option value="0">Inactiva (Oculta)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Crear Categoría</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
 
 </main>
 @endsection

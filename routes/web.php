@@ -87,7 +87,7 @@ Route::get('/contacto', function () {
     return view('contacto');
 });
 
-Route::post('/contacto', [ControladorS_A_F::class, 'procesar']);
+
 
 Route::get('/creatinas', function () {
     return view('Creatinas');
@@ -133,6 +133,9 @@ Route::get(
 Route::get('/listado_pedidos/{id}', [PedidoController::class, 'listadoPedidos'])
     ->middleware('auth')->name('listado_pedidos');
 
+Route::post('/contacto', [App\Http\Controllers\ConsultaController::class, 'enviar'])
+->name('consultas.enviar');
+
 
 // 1. NUEVA RUTA PARA ACTIVAR (Debe ir primero)
 // Todo lo que esté dentro de este grupo pasará por tu AdminMiddleware
@@ -150,4 +153,6 @@ Route::middleware([AdminMiddleware::class])->group(function () {
     Route::patch('/categorias_Admin/{id}/activate', [CategoriasController::class, 'activate'])->name('categorias.activate');
     // Le devolvemos su nombre y prefijo original
     Route::resource('categorias_Admin', CategoriasController::class)->names('categorias');
+
+    Route::get('consultas_Admin', [App\Http\Controllers\ConsultaController::class, 'index'])->name('consultas.index');
 });
