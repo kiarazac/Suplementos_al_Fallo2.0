@@ -116,7 +116,7 @@
           <div class="col-lg-4">
             <div class="p-0 bg-light text-dark fs-5 w-75 mx-auto mb-3 " style="text-align: left;">
 
-              <a href="/Productos-star">
+              <a href="/catalogo">
                 <img src="{{ asset('imagenes/logos/logo-star.png') }}" class="img-fluid bg-light " alt="Logo Star">
               </a>
               <p class="mx-3 mb-3">¿Dando tus primeros pasos en la suplementación deportiva? Sabemos que elegir tu primera
@@ -126,7 +126,7 @@
                 dejes de ser el nuevo y pases al siguiente nivel.</p>
               <div class="text-center ">
 
-                <a href="/Productos-star" class="btn btn-dark mb-3">Ver catalogo de Star Nutrition</a>
+                <a href="/catalogo" class="btn btn-dark mb-3">Ver catalogo</a>
 
               </div>
 
@@ -137,7 +137,7 @@
           <div class="col-lg-4">
             <div class="p-0 bg-light text-dark fs-5 w-75 mx-auto mb-3 " style="text-align: left;">
 
-              <a href="/Productos-gold">
+              <a href="/catalogo">
                 <img src="{{ asset('imagenes/logos/logo-gold.png') }}" class="img-fluid bg-light " alt="Logo gold">
               </a>
               <p class="mx-3 mb-5"> Sabemos que llevar tu cuerpo
@@ -148,7 +148,7 @@
                 rompas estancamientos sin irte a los extremos.</p>
               <div class="text-center ">
 
-                <a href="/Productos-gold" class="btn btn-dark mb-3">Ver catalogo de Gold Nutrition</a>
+                <a href="/catalogo" class="btn btn-dark mb-3">Ver catalogo</a>
 
               </div>
 
@@ -160,7 +160,7 @@
           <div class="col-lg-4">
             <div class="p-0 bg-light text-dark fs-5 w-75 mx-auto mb-3 " style="text-align: left;">
 
-              <a href="/Productos-insane">
+              <a href="/catalogo">
                 <img src="{{ asset('imagenes/logos/logo-insane.png') }}" class="img-fluid bg-light " alt="Logo gold">
               </a>
               <p class="mx-3 mb-3"> ¿Tu nivel de locura hace que los
@@ -172,7 +172,7 @@
                 energía y concentración explosiva para que vayas a mutar.</p>
               <div class="text-center ">
 
-                <a href="/Productos-insane" class="btn btn-dark mb-3">Ver catalogo de Insane Labz</a>
+                <a href="/catalogo" class="btn btn-dark mb-3">Ver catalogo</a>
 
               </div>
 
