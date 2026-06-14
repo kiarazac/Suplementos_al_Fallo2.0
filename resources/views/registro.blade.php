@@ -14,23 +14,23 @@
           class="mb-3 mx-auto d-block rounded float-start"
           alt="logo" width="100">
 
-@if ($errors->any())
+        @if ($errors->any())
 
-    <div class="alert alert-danger">
+        <div class="alert alert-danger">
 
-        <ul class="mb-0">
+          <ul class="mb-0">
 
             @foreach ($errors->all() as $error)
 
-                <li>{{ $error }}</li>
+            <li>{{ $error }}</li>
 
             @endforeach
 
-        </ul>
+          </ul>
 
-    </div>
+        </div>
 
-@endif
+        @endif
         <form
           class="row g-1"
           style="text-align: justify;"
@@ -48,18 +48,6 @@
           <div class="col-md-4">
             <label class="form-label">Apellido</label>
             <input type="text" name="apellido" class="form-control" placeholder="Tu apellido" required>
-          </div>
-
-          <!-- Usuario -->
-          <div class="col-md-4">
-            <label class="form-label">Usuario</label>
-            <div class="input-group">
-              <span class="input-group-text">@</span>
-              <input type="text" name="username" class="form-control" placeholder="usuario" required>
-            </div>
-            <div class="invalid-feedback">
-              Por favor, ingresá un usuario válido.
-            </div>
           </div>
 
           <!-- Email -->
