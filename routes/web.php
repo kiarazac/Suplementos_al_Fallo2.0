@@ -11,6 +11,7 @@ use App\Http\Controllers\CategoriasController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Controllers\CarritoController;
 
 Route::get('/', function () {
     return view('Home');
@@ -22,24 +23,24 @@ Route::get('/carrito', [PedidoController::class, 'index'])
 
 Route::post(
     '/carrito/agregar',
-    [PedidoController::class, 'agregar']
+    [CarritoController::class, 'agregar']
 )->middleware('auth')
     ->name('carrito.agregar');
 
 Route::delete(
     '/carrito/eliminar/{id}',
-    [PedidoController::class, 'eliminarUnDetalle']
+    [CarritoController::class, 'eliminarUnDetalle']
 )->name('carrito.eliminarUnDetalle');
 
 Route::delete(
     '/carrito/eliminarTodo/{id}',
-    [PedidoController::class, 'eliminarTodo']
+    [CarritoController::class, 'eliminarTodo']
 )->name('carrito.eliminarTodo');
 
-Route::get('/carrito/generar_pedido', [PedidoController::class, 'pedidoSinConfirmar'])
-    ->name('carrito.pedidoSinConfirmar');
+Route::get('/carrito/generar_carrito', [CarritoController::class, 'carritoSinConfirmar'])
+    ->name('carrito.carritoSinConfirmar');
 
-Route::post('/carrito/confirmar_pedido/{id}', [PedidoController::class, 'confirmarPedido'])
+Route::post('/carrito/confirmar_pedido/{id}', [CarritoController::class, 'confirmar'])
     ->name('carrito.confirmarPedido');
 
 Route::get('/sobre-nosotros', function () {
@@ -87,43 +88,9 @@ Route::get('/contacto', function () {
     return view('contacto');
 });
 
-Route::post('/contacto', [ControladorS_A_F::class, 'procesar']);
 
-Route::get('/creatinas', function () {
-    return view('Creatinas');
-});
 
-Route::get('/proteinas', function () {
-    return view('Proteinas');
-});
 
-Route::get('/pre-entrenos', function () {
-    return view('Pre-entrenos');
-});
-
-Route::get('/Productos-insane', function () {
-    return view('Productos-insane');
-});
-Route::get('/Productos-star', function () {
-    return view('Productos-star');
-});
-Route::get('/Productos-gold', function () {
-    return view('Productos-gold');
-});
-
-Route::get('/Pagina_en_construccion', function () {
-    return view('Pagina-en-construccion');
-});
-Route::get('/productos-insane', function () {
-    return view('Productos-insane');
-});
-Route::get('/productos-star', function () {
-    return view('Productos-star');
-});
-
-Route::get('/productos-gold', function () {
-    return view('Productos-gold');
-});
 
 Route::get(
     '/catalogo',
@@ -133,6 +100,12 @@ Route::get(
 Route::get('/listado_pedidos/{id}', [PedidoController::class, 'listadoPedidos'])
     ->middleware('auth')->name('listado_pedidos');
 
+Route::post('/contacto', [App\Http\Controllers\ConsultaController::class, 'enviar'])
+->name('consultas.enviar');
+
+
+// Ruta específica para confirmar el carrito
+Route::post('/carrito/{carrito}/confirmar', [CarritoController::class, 'confirmar']);
 
 // 1. NUEVA RUTA PARA ACTIVAR (Debe ir primero)
 // Todo lo que esté dentro de este grupo pasará por tu AdminMiddleware
@@ -150,4 +123,6 @@ Route::middleware([AdminMiddleware::class])->group(function () {
     Route::patch('/categorias_Admin/{id}/activate', [CategoriasController::class, 'activate'])->name('categorias.activate');
     // Le devolvemos su nombre y prefijo original
     Route::resource('categorias_Admin', CategoriasController::class)->names('categorias');
+
+    Route::get('consultas_Admin', [App\Http\Controllers\ConsultaController::class, 'index'])->name('consultas.index');
 });

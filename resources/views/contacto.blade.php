@@ -22,12 +22,12 @@
                     <p class="fs-3 mt-3">¿Tienes alguna pregunta? ¡Estamos aquí para ayudarte!</p>
                     <div class="card bg-dark text-light border-0  px-5 mb-5 shadow-lg overflow-hidden">
                         <div class="card-body">
-                            <form action="{{ url('/contacto') }}" method="POST">
+                            <form action="{{ route('consultas.enviar') }}" method="POST">
                                 @csrf
 
                                 <div class="mb-3 text-start">
                                     <label class="form-label">Nombre completo</label>
-                                    <input type="text" class="form-control" name="nombre" required>
+                                    <input type="text" class="form-control" name="nombreCompleto" required>
                                     <div class="invalid-feedback">
                                         Por favor ingresá tu nombre.
                                     </div>
@@ -43,7 +43,7 @@
 
                                 <div class="mb-3 text-start">
                                     <label class="form-label">Mensaje</label>
-                                    <textarea class="form-control" name="mensaje" rows="4" required></textarea>
+                                    <textarea class="form-control" name="Mensaje" rows="4" required></textarea>
                                     <div class="invalid-feedback">
                                         El mensaje no puede estar vacío.
                                     </div>

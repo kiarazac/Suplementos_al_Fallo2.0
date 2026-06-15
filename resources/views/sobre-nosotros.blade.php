@@ -100,7 +100,7 @@
 
         <!-- BOTÓN -->
         <div class="col-12 col-md-4 d-flex justify-content-center align-items-center">
-          <a href="/"  class="w-100 d-flex justify-content-center">
+          <a href="/catalogo"  class="w-100 d-flex justify-content-center">
             <button type="button" class="btn btn-warning fw-bold fs-5 text-uppercase px-4 py-3">
               Conocé nuestros productos
             </button>
