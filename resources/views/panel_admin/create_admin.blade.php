@@ -10,9 +10,8 @@
     <div class="col-12 col-md-8 col-lg-9">
       <div class="card bg-dark p-4 shadow-lg w-100 text-light mb-5">
 
-        <img src="imagenes/logos/logo_solo_mascara.jpg"
-          class="mb-3 mx-auto d-block rounded float-start"
-          alt="logo" width="100">
+        <h5 class="card-title text-center mb-4 fw-bold">
+          <i class="bi bi-person-plus-fill"></i> CREAR NUEVO ADMINISTRADOR </h5>
 
 @if ($errors->any())
 
@@ -31,10 +30,11 @@
     </div>
 
 @endif
+       {{-- CAMBIAMOS EL ACTION PARA QUE APUNTE A LA NUEVA RUTA SECRETA --}}
         <form
           class="row g-1"
           style="text-align: justify;"
-          action="/registro"
+          action="{{ route('usuarios.storeAdmin') }}" 
           method="POST">
 
           @csrf
@@ -111,9 +111,13 @@
             </div>
           </div>
 
-          <div class="d-flex justify-content-center mt-3">
-            <button type="submit" class="btn btn-warning px-4">
-              Registrarse
+          <div class="d-flex justify-content-center mt-3 gap-2">
+            {{-- Botón para volver atrás por si se arrepiente --}}
+            <a href="/panel_admin" class="btn btn-secondary px-4">Cancelar</a>
+            
+            {{-- Botón actualizado --}}
+            <button type="submit" class="btn btn-warning px-4 fw-bold">
+              Crear Administrador
             </button>
           </div>
 
