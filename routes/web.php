@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\CarritoController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('Home');
@@ -47,6 +48,10 @@ Route::post('/carrito/confirmar_pedido', [CarritoController::class, 'confirmar']
 
 Route::get('/carrito/pedido_confirmado', function () {
     return view('pedido_confirmado');
+});
+
+Route::get('/carrito/producto_sin_stock', function () {
+    return view('producto_sin_stock');
 });
     
 Route::get('/sobre-nosotros', function () {
@@ -113,19 +118,26 @@ Route::post('/contacto', [App\Http\Controllers\ConsultaController::class, 'envia
 // 1. NUEVA RUTA PARA ACTIVAR (Debe ir primero)
 // Todo lo que esté dentro de este grupo pasará por tu AdminMiddleware
 Route::middleware([AdminMiddleware::class])->group(function () {
+    
     // 1. EL DUEÑO DEL PANEL: ProductoController dibuja la pantalla en /panel_admin
     Route::resource('/panel_admin', ProductoController::class)->names('panel_admin');
     Route::patch('/pedidos_Admin/{id}/entregar', [PedidoController::class, 'entregarPedido'])->name('pedidos.entregar');
 
     // 2. RUTAS DE ACCIÓN DE MARCAS (Reciben datos, operan y redireccionan)
     Route::patch('/marcas_Admin/{id}/activate', [MarcasController::class, 'activate'])->name('marcas.activate');
-    // Le devolvemos su nombre y prefijo original
     Route::resource('marcas_Admin', MarcasController::class)->names('marcas');
 
     // 3. RUTAS DE ACCIÓN DE CATEGORÍAS (Reciben datos, operan y redireccionan)
     Route::patch('/categorias_Admin/{id}/activate', [CategoriasController::class, 'activate'])->name('categorias.activate');
-    // Le devolvemos su nombre y prefijo original
     Route::resource('categorias_Admin', CategoriasController::class)->names('categorias');
 
     Route::get('consultas_Admin', [App\Http\Controllers\ConsultaController::class, 'index'])->name('consultas.index');
+
+    // =======================================================
+    // 4. NUEVAS RUTAS DE GESTIÓN DE USUARIOS
+    // =======================================================
+    Route::patch('/usuarios_Admin/{user}/make-admin', [UserController::class, 'makeAdmin'])->name('usuarios.makeAdmin');
+    Route::patch('/usuarios_Admin/{user}/remove-admin', [UserController::class, 'removeAdmin'])->name('usuarios.removeAdmin');
+    Route::delete('/usuarios_Admin/{user}', [UserController::class, 'destroy'])->name('usuarios.destroy');
+
 });

@@ -5,6 +5,7 @@ use App\Models\Carrito;
 use App\Models\Pedido;
 use App\Models\Producto;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 use Exception;
 
 class CheckoutService
@@ -14,6 +15,7 @@ class CheckoutService
     {
         // Iniciamos la transacción
         return DB::transaction(function () use ($carrito, $userId, $lugarEntrega) {
+            $productosSinStock = [];
             
             // 1. Crear el Pedido (incluyendo los campos correctos de tu BD)
             $pedido = Pedido::create([
@@ -32,9 +34,14 @@ class CheckoutService
                                   ->lockForUpdate()
                                   ->first();
 
-                // Verificamos si hay stock suficiente (Corregido de 'quantity' a 'cantidad')
+                // Verificamos si hay stock suficiente antes de crear el detalle del pedido
                 if ($producto->stock < $detalle_carrito->cantidad) {
-                    throw new Exception("Stock insuficiente para el producto: {$producto->nombre}");
+                    $productosSinStock[] = [
+                        'producto' => $producto,
+                        'solicitado' => $detalle_carrito->cantidad,
+                        'disponible' => $producto->stock,
+                    ];
+                    continue;
                 }
 
                 // 3. Generar el detalle del pedido
@@ -49,9 +56,13 @@ class CheckoutService
                 $producto->decrement('stock', $detalle_carrito->cantidad);
             }
 
-            // 5. Eliminar los detalles y el carrito (Corregido a tu relación exacta)
-            $carrito->detalle_carritos()->delete(); 
-            $carrito->delete(); 
+            if (!empty($productosSinStock)) {
+                throw new Exception('stock_insuficiente', 422);
+            }
+
+            // 5. Eliminar los detalles y el carrito solo si el checkout terminó correctamente
+            $carrito->detalle_carritos()->delete();
+            $carrito->delete();
 
             // Si llegamos aquí, todo salió bien.
             return $pedido;

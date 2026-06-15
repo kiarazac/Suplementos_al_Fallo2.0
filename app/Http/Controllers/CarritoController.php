@@ -56,13 +56,21 @@ class CarritoController extends Controller
             // Delegamos la lógica al servicio
             $pedido = $checkoutService->processCheckout($carrito, $userId, $lugarEntrega);
 
-            return view('pedido_confirmado');
+            return view('pedido_confirmado', compact('pedido'));
 
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'No se pudo procesar el pedido.',
-                'detalle' => $e->getMessage()
-            ], 400);
+            if ($e->getMessage() === 'stock_insuficiente') {
+                return redirect()->route('carrito.producto_sin_stock')
+                    ->with('productos_sin_stock', $carrito->detalle_carritos->map(function ($detalle) {
+                        return [
+                            'producto' => $detalle->producto,
+                            'solicitado' => $detalle->cantidad,
+                            'disponible' => $detalle->producto->stock,
+                        ];
+                    })->values());
+            }
+
+            return back()->with('error', $e->getMessage());
         }
     }
 
