@@ -88,7 +88,7 @@
                         <ul class="list-unstyled mb-0" style="font-size: 0.9rem;">
                             
                             {{-- Iteramos los detalles del pedido --}}
-                            @forelse($pedido->detalles as $detalle)
+                            @forelse($pedido->detalle_pedidos as $detalle)
                                 <li class="text-light mb-1 text-truncate" title="{{ $detalle->producto->nombre ?? 'Producto' }}">
                                     <i class="bi bi-box-seam me-1 text-white-50"></i> 
                                     {{-- Cantidad destacada --}}
