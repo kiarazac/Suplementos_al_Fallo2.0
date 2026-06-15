@@ -88,10 +88,7 @@
                 </div>
        
 
-                <form action="{{ route('carrito.confirmar', $carrito->id) }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-success">Confirmar Pedido</button>
-                </form>
+                <a href="{{ route('carrito.carritoSinConfirmar') }}" class="btn btn-success">Confirmar Pedido</a>
 
 
                 @endif 

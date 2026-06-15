@@ -24,7 +24,7 @@ class CheckoutService
             ]);
 
             // 2. Procesar los items del carrito (Corregido a 'detalle_carrito' en minúsculas)
-            foreach ($carrito->detalle_carrito as $detalle_carrito) {
+            foreach ($carrito->detalle_carritos as $detalle_carrito) {
                 
                 // BLOQUEO PESIMISTA: Bloqueamos la fila del producto en MariaDB
                 $producto = Producto::where('id', $detalle_carrito->producto_id)
@@ -49,7 +49,7 @@ class CheckoutService
             }
 
             // 5. Eliminar los detalles y el carrito (Corregido a tu relación exacta)
-            $carrito->detalle_carrito()->delete(); 
+            $carrito->detalle_carritos()->delete(); 
             $carrito->delete(); 
 
             // Si llegamos aquí, todo salió bien.
