@@ -50,10 +50,11 @@ Route::get('/carrito/pedido_confirmado', function () {
     return view('pedido_confirmado');
 });
 
+
 Route::get('/carrito/producto_sin_stock', function () {
     return view('producto_sin_stock');
-});
-    
+})->name('carrito.producto_sin_stock');
+
 Route::get('/sobre-nosotros', function () {
     return view('sobre-nosotros');
 });

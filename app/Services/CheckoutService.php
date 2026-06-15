@@ -5,66 +5,68 @@ use App\Models\Carrito;
 use App\Models\Pedido;
 use App\Models\Producto;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redirect;
 use Exception;
 
 class CheckoutService
 {
-    // Agregamos $lugarEntrega como tercer parámetro
     public function processCheckout(Carrito $carrito, $userId, $lugarEntrega)
     {
-        // Iniciamos la transacción
         return DB::transaction(function () use ($carrito, $userId, $lugarEntrega) {
             $productosSinStock = [];
             
-            // 1. Crear el Pedido (incluyendo los campos correctos de tu BD)
+            // 1. Crear el Pedido inicial
             $pedido = Pedido::create([
-                'cliente_id'       => $userId, // Cambiado de 'user_id' a 'cliente_id' según tus controladores anteriores
+                'cliente_id'       => $userId,
                 'total'            => $carrito->total, 
                 'estado'           => 'confirmado',
-                'titular_compra'   => $carrito->titular_compra, 
-                'lugar_de_entrega' => $lugarEntrega // <-- NUEVO CAMPO ASIGNADO
+                'titular_compra'   => $carrito->titular_compra ?? 'Consumidor Final', 
+                'lugar_de_entrega' => $lugarEntrega
             ]);
 
-            // 2. Procesar los items del carrito (Corregido a 'detalle_carrito' en minúsculas)
+            // 2. PRIMERA PASADA: Verificar el stock de TODO el carrito
             foreach ($carrito->detalle_carritos as $detalle_carrito) {
-                
-                // BLOQUEO PESIMISTA: Bloqueamos la fila del producto en MariaDB
+                // Bloqueo pesimista
                 $producto = Producto::where('id', $detalle_carrito->producto_id)
                                   ->lockForUpdate()
                                   ->first();
 
-                // Verificamos si hay stock suficiente antes de crear el detalle del pedido
+                // Si falta stock de este producto, lo guardamos en nuestro array
                 if ($producto->stock < $detalle_carrito->cantidad) {
-                    $productosSinStock[] = [
-                        'producto' => $producto,
+                    // Creamos un objeto genérico para que tu vista Blade pueda leerlo con la flecha (->)
+                    $productosSinStock[] = (object)[
+                        'nombre'     => $producto->nombre,
                         'solicitado' => $detalle_carrito->cantidad,
-                        'disponible' => $producto->stock,
+                        'stock'      => $producto->stock,
                     ];
-                    continue;
                 }
+            }
 
-                // 3. Generar el detalle del pedido
+            // 3. Si encontramos AL MENOS UN producto sin stock, abortamos todo
+            if (!empty($productosSinStock)) {
+                // Lanzamos la excepción convirtiendo el array en formato JSON para poder leerlo en el controlador
+                // Esto hace un "ROLLBACK" automático, borrando el Pedido que creamos en el paso 1.
+                throw new Exception(json_encode($productosSinStock));
+            }
+
+            // 4. SEGUNDA PASADA: Como ya sabemos que hay stock de todo, creamos los detalles y descontamos
+            foreach ($carrito->detalle_carritos as $detalle_carrito) {
+                $producto = Producto::find($detalle_carrito->producto_id); // Ya está bloqueado por el paso 2
+
                 $pedido->detalle_pedidos()->create([
                     'producto_id'     => $producto->id,
                     'cantidad'        => $detalle_carrito->cantidad,
-                    'precio_unitario' => $producto->precio, // Cambiado de 'precio' a 'precio_unitario' según tus controladores anteriores
+                    'precio_unitario' => $producto->precio, 
                     'subtotal'        => $detalle_carrito->subtotal
                 ]);
 
-                // 4. Descontar el stock
+                // Descontar el stock
                 $producto->decrement('stock', $detalle_carrito->cantidad);
             }
 
-            if (!empty($productosSinStock)) {
-                throw new Exception('stock_insuficiente', 422);
-            }
-
-            // 5. Eliminar los detalles y el carrito solo si el checkout terminó correctamente
+            // 5. Limpieza final
             $carrito->detalle_carritos()->delete();
             $carrito->delete();
 
-            // Si llegamos aquí, todo salió bien.
             return $pedido;
         });
     }

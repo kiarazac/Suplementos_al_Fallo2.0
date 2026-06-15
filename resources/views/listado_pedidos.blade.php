@@ -25,9 +25,11 @@
 
                     {{-- Cabecera de la Tarjeta --}}
                     <div class="card-header bg-black border-warning py-3">
+
                         <h4 class="mb-2 text-warning fw-bold">
-                            Pedido # {{ $pedido->id }}
+                            Pedido # {{ $pedidos->count() - $loop->index }}
                         </h4>
+
                         @if($pedido->estado === 'carrito')
                         <span class="badge bg-info text-dark ms-2 fs-6">
                             En Carrito

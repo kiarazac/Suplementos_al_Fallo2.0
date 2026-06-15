@@ -45,34 +45,30 @@ class CarritoController extends Controller
         }
 
         try {
-            $lugarEntrega = trim((string) $request->input('lugar_de_entrega', ''));
-
-            if ($lugarEntrega === '') {
-                $lugarEntrega = $request->input('metodo_entrega') === 'retiro'
-                    ? 'Retiro en Local'
-                    : 'Sin especificar';
-            }
-
             // Delegamos la lógica al servicio
-            $pedido = $checkoutService->processCheckout($carrito, $userId, $lugarEntrega);
+            $pedido = $checkoutService->processCheckout($carrito, $userId, $request->lugar_de_entrega);
 
-            return view('pedido_confirmado', compact('pedido'));
+            // Si todo salió bien, redirigimos al éxito
+            return redirect('/carrito/pedido_confirmado'); // O a tu listado de pedidos
 
         } catch (\Exception $e) {
-            if ($e->getMessage() === 'stock_insuficiente') {
+            $mensajeError = $e->getMessage();
+            
+            // Intentamos decodificar el JSON que nos envió el CheckoutService
+            $productosSinStock = json_decode($mensajeError);
+
+            // Comprobamos si el error era nuestro JSON de falta de stock
+            if (json_last_error() === JSON_ERROR_NONE && is_array($productosSinStock)) {
+                
+                // Redirigimos a TU ruta específica, enviando la variable de sesión que pide tu vista
                 return redirect()->route('carrito.producto_sin_stock')
-                    ->with('productos_sin_stock', $carrito->detalle_carritos->map(function ($detalle) {
-                        return [
-                            'producto' => $detalle->producto,
-                            'solicitado' => $detalle->cantidad,
-                            'disponible' => $detalle->producto->stock,
-                        ];
-                    })->values());
+                                 ->with('productos_sin_stock', $productosSinStock);
             }
 
-            return back()->with('error', $e->getMessage());
+            // Si fue un error general de Base de Datos o código, lo mandamos atrás con el error crudo
+            return redirect()->back()->with('error', 'Ocurrió un error inesperado: ' . $mensajeError);
         }
-    }
+        }
 
     public function agregar(Request $request)
     {
