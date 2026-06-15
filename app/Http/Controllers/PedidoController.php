@@ -18,6 +18,7 @@ class PedidoController extends Controller
     {
         $pedidos = Pedido::with('detalle_pedidos.producto')
             ->where('cliente_id', $id)
+            ->latest()
             ->get();
 
         return view(

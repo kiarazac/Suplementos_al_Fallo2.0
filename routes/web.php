@@ -39,10 +39,21 @@ Route::delete(
 )->name('carrito.eliminarTodo');
 
 Route::get('/carrito/generar_pedido', [CarritoController::class, 'carritoSinConfirmar'])
+    ->middleware('auth') // <-- AGREGAR ESTO
     ->name('carrito.carritoSinConfirmar');
 
-Route::post('/carrito/confirmar_pedido/{id}', [CarritoController::class, 'confirmar'])
+Route::post('/carrito/confirmar_pedido', [CarritoController::class, 'confirmar'])
+    ->middleware('auth')
     ->name('carrito.confirmar');
+
+Route::get('/carrito/pedido_confirmado', function () {
+    return view('pedido_confirmado');
+});
+
+
+Route::get('/carrito/producto_sin_stock', function () {
+    return view('producto_sin_stock');
+})->name('carrito.producto_sin_stock');
 
 Route::get('/sobre-nosotros', function () {
     return view('sobre-nosotros');
@@ -104,9 +115,6 @@ Route::get('/listado_pedidos/{id}', [PedidoController::class, 'listadoPedidos'])
 Route::post('/contacto', [App\Http\Controllers\ConsultaController::class, 'enviar'])
 ->name('consultas.enviar');
 
-
-// Ruta específica para confirmar el carrito
-Route::post('/carrito/{carrito}/confirmar', [CarritoController::class, 'confirmar']);
 
 // 1. NUEVA RUTA PARA ACTIVAR (Debe ir primero)
 // Todo lo que esté dentro de este grupo pasará por tu AdminMiddleware

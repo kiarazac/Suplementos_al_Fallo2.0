@@ -52,15 +52,14 @@
             $cantidadCarrito = 0;
 
             if(Auth::check()) {
-            // 2. Buscamos el pedido usando 'cliente_id' (como está en tu BD)
-            $pedido = \App\Models\Pedido::where('cliente_id', Auth::id())
-            ->where('estado', 'carrito')
+            // 2. Buscamos el carrito usando 'cliente_id' (como está en tu BD)
+            $carrito = \App\Models\Carrito::where('cliente_id', Auth::id())
             ->first();
 
-            // 3. Si el pedido existe, sumamos las cantidades del detalle
-            if ($pedido) {
-            // Asegúrate de que tu modelo se llame 'DetallePedido'
-            $cantidadCarrito = \App\Models\DetallePedido::where('pedido_id', $pedido->id)
+            // 3. Si el carrito existe, sumamos las cantidades del detalle
+            if ($carrito) {
+            // Asegúrate de que tu modelo se llame 'DetalleCarrito'
+            $cantidadCarrito = \App\Models\Detalle_Carrito::where('carrito_id', $carrito->id)
             ->sum('cantidad');
             }
             }

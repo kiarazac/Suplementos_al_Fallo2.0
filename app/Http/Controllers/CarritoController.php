@@ -23,7 +23,7 @@ class CarritoController extends Controller
     /**
      * Confirma el carrito, genera el pedido y descuenta el stock.
      */
-    public function confirmar(Request $request, CheckoutService $checkoutService)
+    public function confirmar(Request $request, CheckoutService $checkoutService, $id = null)
     {
         $userId = Auth::id();
 
@@ -33,6 +33,9 @@ class CarritoController extends Controller
 
         // Buscamos el carrito del usuario autenticado con sus detalles
         $carrito = Carrito::with('detalle_carritos')
+            ->when($id, function ($query) use ($id) {
+                return $query->where('id', $id);
+            })
             ->where('cliente_id', $userId)
             ->first();
 
@@ -45,19 +48,27 @@ class CarritoController extends Controller
             // Delegamos la lógica al servicio
             $pedido = $checkoutService->processCheckout($carrito, $userId, $request->lugar_de_entrega);
 
-            return response()->json([
-                'mensaje' => 'Pedido generado correctamente.',
-                'pedido' => $pedido
-            ], 201);
-
+            // Si todo salió bien, redirigimos al éxito
+            return redirect('/carrito/pedido_confirmado'); // O a tu listado de pedidos
 
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'No se pudo procesar el pedido.',
-                'detalle' => $e->getMessage()
-            ], 400);
+            $mensajeError = $e->getMessage();
+            
+            // Intentamos decodificar el JSON que nos envió el CheckoutService
+            $productosSinStock = json_decode($mensajeError);
+
+            // Comprobamos si el error era nuestro JSON de falta de stock
+            if (json_last_error() === JSON_ERROR_NONE && is_array($productosSinStock)) {
+                
+                // Redirigimos a TU ruta específica, enviando la variable de sesión que pide tu vista
+                return redirect()->route('carrito.producto_sin_stock')
+                                 ->with('productos_sin_stock', $productosSinStock);
+            }
+
+            // Si fue un error general de Base de Datos o código, lo mandamos atrás con el error crudo
+            return redirect()->back()->with('error', 'Ocurrió un error inesperado: ' . $mensajeError);
         }
-    }
+        }
 
     public function agregar(Request $request)
     {
