@@ -134,6 +134,14 @@
 
                             </p>
 
+                            <p
+                                class="card-text text-black mb-2">
+
+                                {{ $producto->stock > 0 ? 'En stock: ' . $producto->stock : 'Agotado' }}
+
+                            </p>
+                            
+
 
 
 
