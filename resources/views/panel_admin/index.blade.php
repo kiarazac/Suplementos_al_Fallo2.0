@@ -73,7 +73,7 @@
                         </p>
                         <p class="card-text mb-1 text-light fs-6">
                             <i class="bi bi-envelope text-warning me-1"></i> 
-                            <strong>Correo:</strong> {{ $pedido->user->email ?? 'No registrado' }}
+                            <strong>Correo:</strong> {{ $pedido->user_id->email ?? 'No registrado' }}
                         </p>
                         <p class="card-text mb-0 text-white-50 small">
                             <i class="bi bi-calendar-event me-1"></i> {{ $pedido->created_at->format('d/m/Y H:i') }}
