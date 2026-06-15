@@ -118,7 +118,9 @@
                             <span class="badge bg-secondary px-3 py-2 fs-6">{{ ucfirst($pedido->estado) }}</span>
                         @endif
                         
-                        <span class="badge bg-light text-dark px-3 mt-2 py-2 fs-6">Entrega: {{ ucfirst($pedido->lugar_de_entrega) }}</span>
+                        <span class="badge bg-light text-dark px-3 mt-2 py-2 fs-6">Entrega: {{ ucfirst($pedido->lugar_de_entrega) }}
+
+                        </span>
                     </p>
 
                     {{-- BOTONES DE ACCIÓN --}}
@@ -141,7 +143,7 @@
 </div>
                 {{-- fin pedidos --}}
 
-                {{-- PANTALLA DASHBOARD --}}
+                {{-- PANTALLA PANEL DE CONTROL --}}
                 <div class="tab-pane fade" id="pantalla-dashboard" role="tabpanel">
                     <h1 class="text-white mb-5">Panel de Control</h1>
                     <div class="row g-4 mt-3">
@@ -152,7 +154,11 @@
                                     <div
                                         class="card-body d-flex flex-column justify-content-center align-items-center text-center">
                                         <h5 class="card-title text-white mb-3 fw-bold">Usuarios Registrados</h5>
-                                        <p class="card-text fs-2 fw-bold m-0 text-success">{{ $usuarios->count() }}</p>
+                                        
+                                        <p class="card-text fs-2 fw-bold m-0 text-success">{{ $usuarios->where('role', 'customer')->count() }}
+
+                                        </p>
+                                
                                     </div>
                                 </div>
                             </div>
@@ -224,18 +230,30 @@
                                         class="card-body d-flex flex-column justify-content-center align-items-center text-center">
                                         <h4 class="card-title fw-bold text-dark mb-3"> Lista Administradores </h4>
                                         <ul class="list-group list-group-flush w-100">
-                                            @foreach($usuarios as $users)
-                                                @if($users->role == 'admin')
-                                                    <li
-                                                        class="list-group-item bg-warning text-dark border-secondary border-radius-2">
-                                                        <div class="card">
-                                                            <i class="bi bi-person-circle fs-4"></i> {{ $users->name }}
-                                                            ({{ $users->email }})
-                                                        </div>
-                                                    </li>
-                                                @endif
-                                            @endforeach
-                                        </ul>
+    @foreach($usuarios as $users)
+        @if($users->role == 'admin')
+            <li class="list-group-item bg-warning text-dark border-secondary border-radius-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="bi bi-person-circle fs-4"></i> {{ $users->name }}
+                    ({{ $users->email }})
+                </div>
+                
+                {{-- Botón para revocar admin (Oculto para uno mismo) --}}
+                @if(auth()->id() !== $users->id)
+                    <form action="{{ route('usuarios.removeAdmin', $users->id) }}" method="POST" class="m-0">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="btn btn-sm btn-danger fw-bold" onclick="return confirm('¿Estás seguro de quitar el rol de administrador a este usuario?')">
+                            <i class="bi bi-person-down"></i> Quitar Admin
+                        </button>
+                    </form>
+                @else
+                    <span class="badge bg-dark text-white">Tú</span>
+                @endif
+            </li>
+        @endif
+    @endforeach
+</ul>
                                     </div>
                                 </div>
                             </div>
@@ -547,19 +565,39 @@
                         <h1 class="text-white m-0">Listado de usuarios</h1>
                     </div>
                     <div class="row g-4 w-100 mt-2">
-                        @foreach($usuarios as $users)
-                            <div class="col-12 col-md-4 col-lg-4">
-                                <div class="card h-100 bg-dark text-white border-secondary shadow-sm">
-                                    <div class="card-body">
-                                        <h4 class="card-title text-warning">{{ $users->name }}</h4>
-                                        <h6 class="card-subtitle mb-3 text-white-50">{{ $users->email }}</h6>
+    @foreach($usuarios as $users)
+        @if($users->role == 'customer')
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="card h-100 bg-dark text-white border-secondary shadow-sm">
+                    <div class="card-body d-flex flex-column">
+                        <h4 class="card-title text-warning">{{ $users->name }}</h4>
+                        <h6 class="card-subtitle mb-3 text-white-50">{{ $users->email }}</h6>
 
+                        <div class="mt-auto d-flex gap-2">
+                            {{-- Botón para hacer Administrador --}}
+                            <form action="{{ route('usuarios.makeAdmin', $users->id) }}" method="POST" class="w-50">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="btn btn-sm btn-success w-100 fw-bold" onclick="return confirm('¿Promover a este usuario a Administrador?')">
+                                    Hacer Admin
+                                </button>
+                            </form>
 
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
+                            {{-- Botón para Eliminar Usuario --}}
+                            <form action="{{ route('usuarios.destroy', $users->id) }}" method="POST" class="w-50">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger w-100 fw-bold" onclick="return confirm('¿Estás seguro de eliminar esta cuenta permanentemente?')">
+                                    Eliminar
+                                </button>
+                            </form>
+                        </div>
                     </div>
+                </div>
+            </div>
+        @endif
+    @endforeach
+</div>
 
 
 
