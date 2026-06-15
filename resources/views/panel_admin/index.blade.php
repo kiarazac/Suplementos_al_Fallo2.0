@@ -225,38 +225,45 @@
                                 </div>
                             </div>
                             <div class="col-sm-12 col-md-6 col-lg-6">
-                                <div class="card h-100 bg-warning text-white border-secondary shadow-sm p-4">
-                                    <div
-                                        class="card-body d-flex flex-column justify-content-center align-items-center text-center">
-                                        <h4 class="card-title fw-bold text-dark mb-3"> Lista Administradores </h4>
-                                        <ul class="list-group list-group-flush w-100">
-    @foreach($usuarios as $users)
-        @if($users->role == 'admin')
-            <li class="list-group-item bg-warning text-dark border-secondary border-radius-2 d-flex justify-content-between align-items-center">
-                <div>
-                    <i class="bi bi-person-circle fs-4"></i> {{ $users->name }}
-                    ({{ $users->email }})
-                </div>
-                
-                {{-- Botón para revocar admin (Oculto para uno mismo) --}}
-                @if(auth()->id() !== $users->id)
-                    <form action="{{ route('usuarios.removeAdmin', $users->id) }}" method="POST" class="m-0">
-                        @csrf
-                        @method('PATCH')
-                        <button type="submit" class="btn btn-sm btn-danger fw-bold" onclick="return confirm('¿Estás seguro de quitar el rol de administrador a este usuario?')">
-                            <i class="bi bi-person-down"></i> Quitar Admin
-                        </button>
-                    </form>
-                @else
-                    <span class="badge bg-dark text-white">Tú</span>
-                @endif
-            </li>
-        @endif
-    @endforeach
-</ul>
-                                    </div>
-                                </div>
+    <div class="card h-100 bg-warning text-white border-secondary shadow-sm p-4">
+        <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+            
+            {{-- Encabezado con el Título y el Botoncito --}}
+            <div class="d-flex justify-content-between align-items-center w-100 mb-3">
+                <h4 class="card-title fw-bold text-dark m-0">Lista Administradores</h4>
+                <a href="{{ route('usuarios.createAdmin') }}" class="btn btn-sm btn-dark fw-bold">
+                    <i class="bi bi-plus-lg"></i> Agregar
+                </a>
+            </div>
+            
+            <ul class="list-group list-group-flush w-100">
+                @foreach($usuarios as $users)
+                    @if($users->role == 'admin')
+                        <li class="list-group-item bg-warning text-dark border-secondary border-radius-2 d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="bi bi-person-circle fs-4"></i> {{ $users->name }}
+                                ({{ $users->email }})
                             </div>
+                            
+                            {{-- Botón para revocar admin (Oculto para uno mismo) --}}
+                            @if(auth()->id() !== $users->id)
+                                <form action="{{ route('usuarios.removeAdmin', $users->id) }}" method="POST" class="m-0">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" class="btn btn-sm btn-danger fw-bold" onclick="return confirm('¿Estás seguro de quitar el rol de administrador a este usuario?')">
+                                        <i class="bi bi-person-down"></i> Quitar Admin
+                                    </button>
+                                </form>
+                            @else
+                                <span class="badge bg-dark text-white">Tú</span>
+                            @endif
+                        </li>
+                    @endif
+                @endforeach
+            </ul>
+        </div>
+    </div>
+</div>
                         </div>
                     </div>
                 </div> {{-- ¡AQUÍ ESTABA EL ERROR! Faltaba este cierre de la pantalla-dashboard --}}
@@ -574,15 +581,8 @@
                         <h6 class="card-subtitle mb-3 text-white-50">{{ $users->email }}</h6>
 
                         <div class="mt-auto d-flex gap-2">
-                            {{-- Botón para hacer Administrador --}}
-                            <form action="{{ route('usuarios.makeAdmin', $users->id) }}" method="POST" class="w-50">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="btn btn-sm btn-success w-100 fw-bold" onclick="return confirm('¿Promover a este usuario a Administrador?')">
-                                    Hacer Admin
-                                </button>
-                            </form>
-
+                        
+                        
                             {{-- Botón para Eliminar Usuario --}}
                             <form action="{{ route('usuarios.destroy', $users->id) }}" method="POST" class="w-50">
                                 @csrf

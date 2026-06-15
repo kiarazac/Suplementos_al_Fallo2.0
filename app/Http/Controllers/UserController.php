@@ -43,4 +43,10 @@ class UserController extends Controller
 
         return back()->with('success', 'Usuario eliminado permanentemente.');
     }
+
+    // Muestra el formulario para crear un nuevo administrador
+public function createAdminForm()
+{
+    return view('panel_admin.create_admin'); 
+}
 }
