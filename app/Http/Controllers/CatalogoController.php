@@ -30,8 +30,6 @@ class CatalogoController extends Controller
         $query = Producto::query();
 
 
-
-
         /*
         |--------------------------------------------------------------------------
         | FILTRO POR CATEGORÍA
@@ -45,15 +43,11 @@ class CatalogoController extends Controller
         */
 
         if ($request->categoria_id) {
-
             $query->where(
                 'categoria_id',
                 $request->categoria_id
             );
-
         }
-
-
 
 
         /*
@@ -67,15 +61,28 @@ class CatalogoController extends Controller
         */
 
         if ($request->marca_id) {
-
             $query->where(
                 'marca_id',
                 $request->marca_id
             );
-
         }
 
 
+        /*
+        |--------------------------------------------------------------------------
+        | FILTRO POR NOMBRE (BUSCADOR)
+        |--------------------------------------------------------------------------
+        |
+        | Si el usuario escribió algo en la barra de búsqueda:
+        | /catalogo?buscar=creatina
+        |
+        */
+
+        if ($request->buscar) {
+            // Usamos LIKE para buscar coincidencias parciales.
+            // Los '%' significan "cualquier texto antes o después"
+            $query->where('nombre', 'LIKE', '%' . $request->buscar . '%');
+        }
 
 
         /*
@@ -85,8 +92,6 @@ class CatalogoController extends Controller
         */
 
         $query->where('activo', true);
-
-
 
 
         /*
@@ -99,8 +104,6 @@ class CatalogoController extends Controller
         */
 
         $productos = $query->get();
-
-
 
 
         /*
@@ -117,8 +120,6 @@ class CatalogoController extends Controller
         $marcas = Marca::all();
 
 
-
-
         /*
         |--------------------------------------------------------------------------
         | Retornamos vista
@@ -133,5 +134,6 @@ class CatalogoController extends Controller
                 'marcas'
             )
         );
+        
     }
 }

@@ -17,122 +17,57 @@
 
 
     {{-- FILTROS --}}
-    <div class="container mb-5">
+<div class="container mb-5">
+    {{-- Formulario GET --}}
+    <form method="GET" action="/catalogo">
+        <div class="row">
 
-        {{-- Formulario GET --}}
-        {{-- GET agrega filtros a la URL --}}
-        <form method="GET" action="/catalogo">
-
-            <div class="row">
-
-
-
-
-                {{-- FILTRO CATEGORÍA --}}
-                <div class="col-md-4 mb-3">
-
-                    <select
-                        name="categoria_id"
-                        class="form-select">
-
-                        <option value="">
-
-                            Todas las categorías
-
-                        </option>
-
-
-
-
-                        {{-- Recorremos categorías --}}
-                        @foreach($categorias as $categoria)
-
-                        <option
-
-                            value="{{ $categoria->id }}"
-
-                            {{-- Mantiene seleccionada --}}
-                            @selected(
-                            request('categoria_id')==$categoria->id
-                            )
-
-                            >
-
-                            {{ $categoria->nombreCategoria }}
-
-                        </option>
-
-                        @endforeach
-
-                    </select>
-
-                </div>
-
-
-
-
-                {{-- FILTRO MARCA --}}
-                <div class="col-md-4 mb-3">
-
-                    <select
-                        name="marca_id"
-                        class="form-select">
-
-                        <option value="">
-
-                            Todas las marcas
-
-                        </option>
-
-
-
-
-                        {{-- Recorremos marcas --}}
-                        @foreach($marcas as $marca)
-
-                        <option
-
-                            value="{{ $marca->id }}"
-
-                            @selected(
-                            request('marca_id')==$marca->id
-                            )
-
-                            >
-
-                            {{ $marca->nombre }}
-
-                        </option>
-
-                        @endforeach
-
-                    </select>
-
-                </div>
-
-
-
-
-                {{-- BOTÓN FILTRAR --}}
-                <div class="col-md-4 mb-3">
-
-                    <button
-                        type="submit"
-                        class="btn btn-dark w-100">
-
-                        Filtrar
-
-                    </button>
-
-                </div>
-
+            {{-- NUEVO: BARRA DE BÚSQUEDA BLANCA --}}
+            <div class="col-md-3 mb-3">
+                <input 
+                    type="text" 
+                    name="buscar" 
+                    class="form-control bg-white text-dark" 
+                    placeholder="Buscar producto..." 
+                    {{-- Esto mantiene lo que el usuario escribió después de recargar --}}
+                    value="{{ request('buscar') }}" 
+                >
             </div>
 
-        </form>
+            {{-- FILTRO CATEGORÍA --}}
+            <div class="col-md-3 mb-3">
+                <select name="categoria_id" class="form-select bg-white text-dark">
+                    <option value="">Todas las categorías</option>
+                    @foreach($categorias as $categoria)
+                        <option value="{{ $categoria->id }}" @selected(request('categoria_id') == $categoria->id)>
+                            {{ $categoria->nombreCategoria }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
 
-    </div>
+            {{-- FILTRO MARCA --}}
+            <div class="col-md-3 mb-3">
+                <select name="marca_id" class="form-select bg-white text-dark">
+                    <option value="">Todas las marcas</option>
+                    @foreach($marcas as $marca)
+                        <option value="{{ $marca->id }}" @selected(request('marca_id') == $marca->id)>
+                            {{ $marca->nombre }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
 
+            {{-- BOTÓN FILTRAR --}}
+            <div class="col-md-3 mb-3">
+                <button type="submit" class="btn btn-dark w-100">
+                    Filtrar
+                </button>
+            </div>
 
+        </div>
+    </form>
+</div>
 
 
 
@@ -253,6 +188,33 @@
 
 @endsection
 
+@section('scripts')
+    <script>
+ document.addEventListener('DOMContentLoaded', function() {
+        // 1. Capturamos el input de búsqueda y todas las tarjetas
+        const buscador = document.getElementById('buscadorProductos');
+        const tarjetas = document.querySelectorAll('.tarjeta-producto');
 
+        // 2. Escuchamos cada vez que el usuario presiona una tecla
+        buscador.addEventListener('keyup', function(e) {
+            // Convertimos el texto buscado a minúsculas para que la búsqueda sea exacta
+            const textoBusqueda = e.target.value.toLowerCase();
+
+            // 3. Recorremos cada tarjeta de producto
+            tarjetas.forEach(function(tarjeta) {
+                // Obtenemos el nombre del producto dentro de la tarjeta
+                const titulo = tarjeta.querySelector('.titulo-producto').textContent.toLowerCase();
+                
+                // 4. Comparamos: si el título incluye lo que escribimos, mostramos. Si no, ocultamos.
+                if(titulo.includes(textoBusqueda)) {
+                    tarjeta.style.display = ''; // Restaura la visualización por defecto
+                } else {
+                    tarjeta.style.display = 'none'; // Oculta toda la columna del producto
+                }
+            });
+        });
+    });
+    </script>
+@endsection
 
 

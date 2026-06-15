@@ -57,10 +57,10 @@
     {{-- GRILLA DE PEDIDOS DINÁMICA --}}
     <div class="row g-4 w-100">
         @foreach($pedidos as $pedido)
-        <div class="col-12 col-md-6 col-lg-4">
+        <div class="col-12 col-md-4 col-lg-4">
             
             {{-- Tarjeta del Pedido --}}
-            <div class="card h-100 bg-dark text-white border-secondary shadow-sm p-3" style="min-width: 280px;">
+            <div class="card h-100 bg-dark text-white border-secondary shadow-sm p-3" style="min-width: 200px;">
                 <div class="card-body d-flex flex-column text-center">
 
                     <h4 class="card-title fw-bold mb-3">Pedido #{{ $pedido->id }}</h4>
@@ -69,11 +69,11 @@
                     <div class="mb-3 text-start border-bottom border-secondary pb-2">
                         <p class="card-text mb-1 text-light fs-6">
                             <i class="bi bi-person-circle text-warning me-1"></i> 
-                            <strong>Cliente:</strong> {{ $pedido->titular_compra }}
+                            <strong>Cliente:</strong> {{ $pedido->titular_compra ?? 'No registrado' }}
                         </p>
                         <p class="card-text mb-1 text-light fs-6">
                             <i class="bi bi-envelope text-warning me-1"></i> 
-                            <strong>Correo:</strong> {{ $pedido->user_id->email ?? 'No registrado' }}
+                            <strong>Correo:</strong> {{ $pedido->cliente->email ?? 'No registrado' }}
                         </p>
                         <p class="card-text mb-0 text-white-50 small">
                             <i class="bi bi-calendar-event me-1"></i> {{ $pedido->created_at->format('d/m/Y H:i') }}
@@ -245,40 +245,56 @@
 
                 {{-- PANTALLA PRODUCTOS --}}
                 <div class="tab-pane fade show active" id="pantalla-productos" role="tabpanel">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h1 class="text-white m-0">Catálogo de Productos</h1>
-                        <a href="{{ route('panel_admin.create') }}" class="btn btn-primary">
-                            <i class="bi bi-plus-lg"></i> Crear Producto
-                        </a>
-                    </div>
+    
+    {{-- ENCABEZADO --}}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-white m-0">Catálogo de Productos</h1>
+        <a href="{{ route('panel_admin.create') }}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Crear Producto
+        </a>
+    </div>
 
-                    <div class="row g-4">
-                        @foreach($productos as $producto)
-                            <div class="col-12 col-md-6 col-lg-4">
-                                <div class="card h-100 bg-dark text-white border-secondary shadow-sm">
-                                    <div class="card-body d-flex flex-column">
-                                        <h5 class="card-title fw-bold">{{ $producto->nombre }}</h5>
-                                        <p class="card-text text-warning fs-5">{{ $producto->stock }} unidades disponibles</p>
-                                        <p class="card-text text-warning fs-5">${{ $producto->precio }}</p>
+    {{-- NUEVA BARRA DE BÚSQUEDA --}}
+    <div class="row mb-4">
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="input-group shadow-sm">
+                <span class="input-group-text bg-dark text-white-50 border-secondary">
+                    <i class="bi bi-search"></i>
+                </span>
+                <input type="text" id="buscadorProductos" class="form-control bg-dark text-white border-secondary" placeholder="Buscar por nombre...">
+            </div>
+        </div>
+    </div>
 
-                                        <div class="mt-auto d-flex gap-2">
-                                            <a href="{{ route('panel_admin.show', $producto->id) }}"
-                                                class="btn btn-sm btn-info text-white w-100">Ver</a>
-                                            <a href="{{ route('panel_admin.edit', $producto->id) }}"
-                                                class="btn btn-sm btn-warning w-100">Editar</a>
-                                            <form action="{{ route('panel_admin.destroy', $producto->id) }}" method="POST"
-                                                class="w-100">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger w-100">Eliminar</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
+    {{-- GRILLA DE PRODUCTOS --}}
+    <div class="row g-4" id="contenedor-productos">
+        @foreach($productos as $producto)
+            {{-- Agregamos la clase 'tarjeta-producto' al contenedor de la columna --}}
+            <div class="col-12 col-md-6 col-lg-4 tarjeta-producto">
+                <div class="card h-100 bg-dark text-white border-secondary shadow-sm">
+                    <div class="card-body d-flex flex-column text-center">
+                        
+                        {{-- Agregamos la clase 'titulo-producto' al H5 --}}
+                        <h5 class="card-title fw-bold titulo-producto">{{ $producto->nombre }}</h5>
+                        <p class="card-text text-warning fs-5 mb-1">{{ $producto->stock }} unidades disponibles</p>
+                        <p class="card-text text-warning fs-5 fw-bold mb-4">${{ $producto->precio }}</p>
+
+                        <div class="mt-auto d-flex gap-2">
+                            <a href="{{ route('panel_admin.show', $producto->id) }}" class="btn btn-sm btn-info text-white w-100 fw-bold">Ver</a>
+                            <a href="{{ route('panel_admin.edit', $producto->id) }}" class="btn btn-sm btn-warning w-100 fw-bold">Editar</a>
+                            <form action="{{ route('panel_admin.destroy', $producto->id) }}" method="POST" class="w-100">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger w-100 fw-bold">Eliminar</button>
+                            </form>
+                        </div>
+                        
                     </div>
                 </div>
+            </div>
+        @endforeach
+    </div>
+</div>
 
                 {{-- PANTALLA MARCAS --}}
                 <div class="tab-pane fade" id="pantalla-marcas" role="tabpanel">
@@ -651,4 +667,32 @@
             }
         });
     </script>
+
+{{-- SCRIPT DE BÚSQUEDA --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. Capturamos el input de búsqueda y todas las tarjetas
+        const buscador = document.getElementById('buscadorProductos');
+        const tarjetas = document.querySelectorAll('.tarjeta-producto');
+
+        // 2. Escuchamos cada vez que el usuario presiona una tecla
+        buscador.addEventListener('keyup', function(e) {
+            // Convertimos el texto buscado a minúsculas para que la búsqueda sea exacta
+            const textoBusqueda = e.target.value.toLowerCase();
+
+            // 3. Recorremos cada tarjeta de producto
+            tarjetas.forEach(function(tarjeta) {
+                // Obtenemos el nombre del producto dentro de la tarjeta
+                const titulo = tarjeta.querySelector('.titulo-producto').textContent.toLowerCase();
+                
+                // 4. Comparamos: si el título incluye lo que escribimos, mostramos. Si no, ocultamos.
+                if(titulo.includes(textoBusqueda)) {
+                    tarjeta.style.display = ''; // Restaura la visualización por defecto
+                } else {
+                    tarjeta.style.display = 'none'; // Oculta toda la columna del producto
+                }
+            });
+        });
+    });
+</script>
 @endsection
