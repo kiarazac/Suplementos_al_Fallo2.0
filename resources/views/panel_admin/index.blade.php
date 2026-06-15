@@ -243,6 +243,7 @@
                 </div>
             </div> {{-- ¡AQUÍ ESTABA EL ERROR! Faltaba este cierre de la pantalla-dashboard --}}
 
+<<<<<<< HEAD
             {{-- PANTALLA PRODUCTOS --}}
             <div class="tab-pane fade show active" id="pantalla-productos" role="tabpanel">
                 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -250,7 +251,60 @@
                     <a href="{{ route('panel_admin.create') }}" class="btn btn-primary">
                         <i class="bi bi-plus-lg"></i> Crear Producto
                     </a>
+=======
+                {{-- PANTALLA PRODUCTOS --}}
+                <div class="tab-pane fade show active" id="pantalla-productos" role="tabpanel">
+    
+    {{-- ENCABEZADO --}}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-white m-0">Catálogo de Productos</h1>
+        <a href="{{ route('panel_admin.create') }}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Crear Producto
+        </a>
+    </div>
+
+    {{-- NUEVA BARRA DE BÚSQUEDA --}}
+    <div class="row mb-4">
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="input-group shadow-sm">
+                <span class="input-group-text bg-dark text-white-50 border-secondary">
+                    <i class="bi bi-search"></i>
+                </span>
+                <input type="text" id="buscadorProductos" class="form-control bg-dark text-white border-secondary" placeholder="Buscar por nombre...">
+            </div>
+        </div>
+    </div>
+
+    {{-- GRILLA DE PRODUCTOS --}}
+    <div class="row g-4" id="contenedor-productos">
+        @foreach($productos as $producto)
+            {{-- Agregamos la clase 'tarjeta-producto' al contenedor de la columna --}}
+            <div class="col-12 col-md-6 col-lg-4 tarjeta-producto">
+                <div class="card h-100 bg-dark text-white border-secondary shadow-sm">
+                    <div class="card-body d-flex flex-column text-center">
+                        
+                        {{-- Agregamos la clase 'titulo-producto' al H5 --}}
+                        <h5 class="card-title fw-bold titulo-producto">{{ $producto->nombre }}</h5>
+                        <p class="card-text text-warning fs-5 mb-1">{{ $producto->stock }} unidades disponibles</p>
+                        <p class="card-text text-warning fs-5 fw-bold mb-4">${{ $producto->precio }}</p>
+
+                        <div class="mt-auto d-flex gap-2">
+                            <a href="{{ route('panel_admin.show', $producto->id) }}" class="btn btn-sm btn-info text-white w-100 fw-bold">Ver</a>
+                            <a href="{{ route('panel_admin.edit', $producto->id) }}" class="btn btn-sm btn-warning w-100 fw-bold">Editar</a>
+                            <form action="{{ route('panel_admin.destroy', $producto->id) }}" method="POST" class="w-100">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger w-100 fw-bold">Eliminar</button>
+                            </form>
+                        </div>
+                        
+                    </div>
+>>>>>>> 49c2c99956a73ab4e331ab79873d6fce5cf9d7ad
                 </div>
+            </div>
+        @endforeach
+    </div>
+</div>
 
                 <div class="row g-4">
                     @foreach($productos as $producto)
@@ -638,6 +692,7 @@
                 sessionStorage.setItem('pestañaActiva', event.target.getAttribute('data-bs-target'));
             });
         });
+<<<<<<< HEAD
 
         let pestañaGuardada = sessionStorage.getItem('pestañaActiva');
 
@@ -649,6 +704,35 @@
                 tab.show();
             }
         }
+=======
+    </script>
+
+{{-- SCRIPT DE BÚSQUEDA --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. Capturamos el input de búsqueda y todas las tarjetas
+        const buscador = document.getElementById('buscadorProductos');
+        const tarjetas = document.querySelectorAll('.tarjeta-producto');
+
+        // 2. Escuchamos cada vez que el usuario presiona una tecla
+        buscador.addEventListener('keyup', function(e) {
+            // Convertimos el texto buscado a minúsculas para que la búsqueda sea exacta
+            const textoBusqueda = e.target.value.toLowerCase();
+
+            // 3. Recorremos cada tarjeta de producto
+            tarjetas.forEach(function(tarjeta) {
+                // Obtenemos el nombre del producto dentro de la tarjeta
+                const titulo = tarjeta.querySelector('.titulo-producto').textContent.toLowerCase();
+                
+                // 4. Comparamos: si el título incluye lo que escribimos, mostramos. Si no, ocultamos.
+                if(titulo.includes(textoBusqueda)) {
+                    tarjeta.style.display = ''; // Restaura la visualización por defecto
+                } else {
+                    tarjeta.style.display = 'none'; // Oculta toda la columna del producto
+                }
+            });
+        });
+>>>>>>> 49c2c99956a73ab4e331ab79873d6fce5cf9d7ad
     });
 </script>
 @endsection
