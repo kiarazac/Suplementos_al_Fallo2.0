@@ -90,6 +90,7 @@
                 </div>
 
             </div>
+            {{-- fin pedidos --}}
 
             <div class="tab-pane fade" id="pantalla-dashboard" role="tabpanel">
                 <h1 class="text-white">Panel de Control</h1>
@@ -110,8 +111,9 @@
                         <div class="card h-100 bg-dark text-white border-secondary shadow-sm">
                             <div class="card-body d-flex flex-column">
                                 <h5 class="card-title fw-bold">{{ $producto->nombre }}</h5>
+                               <p class="card-text text-warning fs-5">{{ $producto->stock }} unidades disponibles</p>
                                 <p class="card-text text-warning fs-5">${{ $producto->precio }}</p>
-
+                                
                                 <div class="mt-auto d-flex gap-2">
                                     <a href="{{ route('panel_admin.show', $producto->id) }}"
                                         class="btn btn-sm btn-info text-white w-100">Ver</a>

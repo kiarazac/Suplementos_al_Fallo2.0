@@ -36,6 +36,10 @@
                             <p class="card-text text-black mb-2 fs-5">
                                 {{ $producto->nombre }}
                             </p>
+                            <p class="card-text text-black mb-2 fs-5">
+                                {{ $producto->stock }} unidades disponibles
+                            </p>
+
                         </div>
 
                     </div>

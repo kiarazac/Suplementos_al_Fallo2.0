@@ -36,7 +36,7 @@
         <div class="mb-3">
     <label class="form-label text-warning fw-bold">Ubicación de la Imagen</label>
     
-    <input type="text" class="form-control bg-light text-dark border-secondary" name="imagen" value="{{ asset('imagenes/productos/' . $producto->imagen) }}" placeholder="Ej: Creatinas/Crea-500-star.jpg">
+    <input type="text" class="form-control bg-light text-dark border-secondary" name="imagen" value="{{  $producto->imagen }}" placeholder="Ej: Creatinas/Crea-500-star.jpg">
     
     {{-- Texto de ayuda explicativo --}}
     <div class="form-text text-white-50 mt-1">
