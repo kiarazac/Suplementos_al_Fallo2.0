@@ -11,10 +11,10 @@
 
             {{-- Resumen rápido del total --}}
             <div class="alert alert-secondary text-dark text-center">
-                <h4>Total a abonar: <strong>${{ $pedido->total }}</strong></h4>
+                <h4>Total a abonar: <strong>${{ $carrito->total }}</strong></h4>
             </div>
 
-            <form action="{{ route('carrito.confirmarPedido', $pedido->id) }}" method="POST">
+            <form action="{{ route('carrito.confirmar', $carrito->id) }}" method="POST">
                 @csrf
 
                 {{-- SELECCIÓN DE MÉTODO DE ENTREGA --}}

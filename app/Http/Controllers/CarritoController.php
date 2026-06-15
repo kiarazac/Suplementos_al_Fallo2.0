@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Carrito;
 use App\Models\Producto;
-use App\Models\Pedido;
 use App\Models\Detalle_Carrito;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -14,11 +13,11 @@ class CarritoController extends Controller
 {
     public function index()
     {
-        $pedido = Carrito::with('detalle_carrito.producto')
+        $carrito = Carrito::with('detalle_carritos.producto')
             ->where('cliente_id', Auth::id())
             ->first();
 
-        return view('carrito', compact('pedido'));
+        return view('carrito', compact('carrito'));
     }
 
     /**
@@ -33,12 +32,12 @@ class CarritoController extends Controller
         }
 
         // Buscamos el carrito del usuario autenticado con sus detalles
-        $carrito = Carrito::with('detalle_carrito')
+        $carrito = Carrito::with('detalle_carritos')
             ->where('cliente_id', $userId)
             ->first();
 
         // Validamos que el carrito exista y tenga productos
-        if (!$carrito || $carrito->detalle_carrito->isEmpty()) {
+        if (!$carrito || $carrito->detalle_carritos->isEmpty()) {
             return response()->json(['error' => 'Tu carrito está vacío.'], 400);
         }
 
@@ -51,7 +50,7 @@ class CarritoController extends Controller
                 'pedido' => $pedido
             ], 201);
 
-            
+
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'No se pudo procesar el pedido.',
@@ -76,7 +75,6 @@ class CarritoController extends Controller
             $carrito = Carrito::create([
                 'cliente_id' => Auth::id(),
                 'titular_compra' => Auth::user()->name,
-                'estado' => 'carrito',
                 'total' => 0
             ]);
         }
@@ -97,8 +95,8 @@ class CarritoController extends Controller
                 'carrito_id' => $carrito->id,
                 'producto_id' => $producto->id,
                 'cantidad' => $request->cantidad,
+                'precio' => $producto->precio,
                 'subtotal' => $producto->precio * $request->cantidad,
-                'precio_unitario' => $producto->precio
             ]);
         }
 
@@ -156,6 +154,6 @@ class CarritoController extends Controller
             return redirect()->back()->with('error', 'No tienes un carrito activo');
         }
 
-        return view('generar_carrito', compact('carrito'));
+        return view('generar_pedido', compact('carrito'));
     }
 }

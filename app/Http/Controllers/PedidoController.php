@@ -12,18 +12,7 @@ use Illuminate\Support\Facades\Auth;
 
 class PedidoController extends Controller
 {
-    public function index()
-    {
-        $pedido = Pedido::with('detalle_pedidos.producto')
-            ->where('cliente_id', Auth::id())
-            ->where('estado', 'carrito')
-            ->first();
-
-        return view(
-            'carrito',
-            compact('pedido')
-        );
-    }
+    
 
     public function listadoPedidos($id)
     {

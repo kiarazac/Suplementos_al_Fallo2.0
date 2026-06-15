@@ -19,10 +19,13 @@ class Carrito extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function detalle_carrito()
+    {
+        return $this->hasMany(Detalle_Carrito::class);
+    }
+
     public function detalle_carritos()
     {
-        return $this->hasMany(
-            Detalle_Carrito::class
-        );
+        return $this->detalle_carrito();
     }
 }

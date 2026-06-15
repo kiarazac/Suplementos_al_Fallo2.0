@@ -18,7 +18,7 @@ Route::get('/', function () {
 })->name('home');
 
 
-Route::get('/carrito', [PedidoController::class, 'index'])
+Route::get('/carrito', [CarritoController::class, 'index'])
     ->name('carrito.index');
 
 Route::post(
@@ -37,11 +37,11 @@ Route::delete(
     [CarritoController::class, 'eliminarTodo']
 )->name('carrito.eliminarTodo');
 
-Route::get('/carrito/generar_carrito', [CarritoController::class, 'carritoSinConfirmar'])
+Route::get('/carrito/generar_pedido', [CarritoController::class, 'carritoSinConfirmar'])
     ->name('carrito.carritoSinConfirmar');
 
 Route::post('/carrito/confirmar_pedido/{id}', [CarritoController::class, 'confirmar'])
-    ->name('carrito.confirmarPedido');
+    ->name('carrito.confirmar');
 
 Route::get('/sobre-nosotros', function () {
     return view('sobre-nosotros');
