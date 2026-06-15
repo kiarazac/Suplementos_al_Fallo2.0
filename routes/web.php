@@ -44,6 +44,10 @@ Route::get('/carrito/generar_pedido', [CarritoController::class, 'carritoSinConf
 Route::post('/carrito/confirmar_pedido', [CarritoController::class, 'confirmar'])
     ->middleware('auth')
     ->name('carrito.confirmar');
+
+Route::get('/carrito/pedido_confirmado', function () {
+    return view('pedido_confirmado');
+});
     
 Route::get('/sobre-nosotros', function () {
     return view('sobre-nosotros');

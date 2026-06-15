@@ -25,9 +25,9 @@
 
                     {{-- Cabecera de la Tarjeta --}}
                     <div class="card-header bg-black border-warning py-3">
-                        <h5 class="mb-2 text-warning fw-bold">
+                        <h4 class="mb-2 text-warning fw-bold">
                             Pedido # {{ $pedido->id }}
-                        </h5>
+                        </h4>
                         @if($pedido->estado === 'carrito')
                         <span class="badge bg-info text-dark ms-2 fs-6">
                             En Carrito
@@ -42,9 +42,11 @@
                         </span>
                         @endif
                         <span class="badge bg-light text-dark ms-2 fs-6">
-                           Entrega en: {{ $pedido->lugar_de_entrega }}
+                            Entrega en: {{ $pedido->lugar_de_entrega }}
                         </span>
-
+                        <h5 class="mb-0 text-light mt-2">
+                            Total: <span class="text-warning fw-bold">${{ $pedido->total }}</span>
+                        </h5>
                     </div>
 
                     {{-- Cuerpo de la Tarjeta (Productos) --}}

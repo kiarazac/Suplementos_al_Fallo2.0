@@ -243,15 +243,6 @@
                 </div>
             </div> {{-- ¡AQUÍ ESTABA EL ERROR! Faltaba este cierre de la pantalla-dashboard --}}
 
-<<<<<<< HEAD
-            {{-- PANTALLA PRODUCTOS --}}
-            <div class="tab-pane fade show active" id="pantalla-productos" role="tabpanel">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1 class="text-white m-0">Catálogo de Productos</h1>
-                    <a href="{{ route('panel_admin.create') }}" class="btn btn-primary">
-                        <i class="bi bi-plus-lg"></i> Crear Producto
-                    </a>
-=======
                 {{-- PANTALLA PRODUCTOS --}}
                 <div class="tab-pane fade show active" id="pantalla-productos" role="tabpanel">
     

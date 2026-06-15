@@ -14,7 +14,7 @@
                 <h4>Total a abonar: <strong>${{ $carrito->total }}</strong></h4>
             </div>
 
-            <form action="{{ route('carrito.confirmar') }}" method="POST">
+            <form id="form-confirmar-pedido" action="{{ route('carrito.confirmar', ['id' => $carrito->id]) }}" method="POST" data-direccion-usuario="{{ $direccionUsuario ?? '' }}">
                 @csrf
 
                 {{-- SELECCIÓN DE MÉTODO DE ENTREGA --}}
@@ -62,7 +62,7 @@
                         {{-- Input para escribir la dirección --}}
                         <div id="bloque_input_direccion" class="mb-3 {{ $direccionUsuario ? 'd-none' : '' }}">
                             <label for="lugar_de_entrega" class="form-label fw-bold text-danger">Escribe la dirección exacta:</label>
-                            <input type="text" class="form-control border-danger" id="lugar_de_entrega" name="lugar_de_entrega" placeholder="Ej: Junín 1234, Piso 2 Depto B" value="{{ $direccionUsuario ?? '' }}">
+                            <input type="text" class="form-control border-danger" id="lugar_de_entrega" name="lugar_de_entrega" placeholder="Ej: Junín 1234, Piso 2 Depto B" value="{{ old('lugar_de_entrega', $direccionUsuario ?? '') }} required">
                         </div>
                     </div>
                 </div>
@@ -75,8 +75,6 @@
                         <p class="mb-0"><strong>Dirección:</strong> Calle Junín 2145, Corrientes Capital.</p>
                     </div>
                 </div>
-
-                <input type="hidden" name="lugar_de_entrega" id="lugar_de_entrega_hidden" value="{{ $direccionUsuario ?? '' }}">
 
                 <div class="row justify-content-center bg-dark mt-4">
                     <div class="col-md-6 text-center">
@@ -101,9 +99,9 @@
         const radioOtra = document.getElementById('dir_otra');
         const bloqueInputDireccion = document.getElementById('bloque_input_direccion');
         const inputLugarEntrega = document.getElementById('lugar_de_entrega');
-        const inputHiddenLugarEntrega = document.getElementById('lugar_de_entrega_hidden');
+        const formConfirmarPedido = document.getElementById('form-confirmar-pedido');
 
-        const direccionUsuario = @json($direccionUsuario ?? '');
+        const direccionUsuario = formConfirmarPedido ? formConfirmarPedido.dataset.direccionUsuario || '' : '';
 
         // Lógica al elegir en el menú desplegable (Select)
         selectMetodo.addEventListener('change', function() {
@@ -114,11 +112,9 @@
                 // Verificamos si tiene la opción registrada marcada
                 if (radioRegistrada && radioRegistrada.checked) {
                     inputLugarEntrega.value = direccionUsuario;
-                    inputHiddenLugarEntrega.value = direccionUsuario;
                     inputLugarEntrega.removeAttribute('required');
                 } else {
                     inputLugarEntrega.value = '';
-                    inputHiddenLugarEntrega.value = '';
                     inputLugarEntrega.setAttribute('required', 'required');
                 }
             } else if (this.value === 'retiro') {
@@ -126,7 +122,6 @@
                 bloqueEnvio.classList.add('d-none');
 
                 inputLugarEntrega.value = 'Retiro en Local';
-                inputHiddenLugarEntrega.value = 'Retiro en Local';
                 inputLugarEntrega.removeAttribute('required');
             }
         });
@@ -137,7 +132,6 @@
                 if (this.checked) {
                     bloqueInputDireccion.classList.add('d-none');
                     inputLugarEntrega.value = direccionUsuario;
-                    inputHiddenLugarEntrega.value = direccionUsuario;
                     inputLugarEntrega.removeAttribute('required');
                 }
             });
@@ -147,10 +141,9 @@
             radioOtra.addEventListener('change', function() {
                 if (this.checked) {
                     bloqueInputDireccion.classList.remove('d-none');
-                    inputLugarEntrega.value = ''; 
-                    inputHiddenLugarEntrega.value = '';
-                    inputLugarEntrega.setAttribute('required', 'required'); 
-                    inputLugarEntrega.focus(); 
+                    inputLugarEntrega.value = '';
+                    inputLugarEntrega.setAttribute('required', 'required');
+                    inputLugarEntrega.focus();
                 }
             });
         }

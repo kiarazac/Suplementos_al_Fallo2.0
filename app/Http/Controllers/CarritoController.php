@@ -23,7 +23,7 @@ class CarritoController extends Controller
     /**
      * Confirma el carrito, genera el pedido y descuenta el stock.
      */
-    public function confirmar(Request $request, CheckoutService $checkoutService)
+    public function confirmar(Request $request, CheckoutService $checkoutService, $id = null)
     {
         $userId = Auth::id();
 
@@ -33,6 +33,9 @@ class CarritoController extends Controller
 
         // Buscamos el carrito del usuario autenticado con sus detalles
         $carrito = Carrito::with('detalle_carritos')
+            ->when($id, function ($query) use ($id) {
+                return $query->where('id', $id);
+            })
             ->where('cliente_id', $userId)
             ->first();
 
@@ -42,14 +45,18 @@ class CarritoController extends Controller
         }
 
         try {
+            $lugarEntrega = trim((string) $request->input('lugar_de_entrega', ''));
+
+            if ($lugarEntrega === '') {
+                $lugarEntrega = $request->input('metodo_entrega') === 'retiro'
+                    ? 'Retiro en Local'
+                    : 'Sin especificar';
+            }
+
             // Delegamos la lógica al servicio
-            $pedido = $checkoutService->processCheckout($carrito, $userId, $request->lugar_de_entrega);
+            $pedido = $checkoutService->processCheckout($carrito, $userId, $lugarEntrega);
 
-            return response()->json([
-                'mensaje' => 'Pedido generado correctamente.',
-                'pedido' => $pedido
-            ], 201);
-
+            return view('pedido_confirmado');
 
         } catch (\Exception $e) {
             return response()->json([

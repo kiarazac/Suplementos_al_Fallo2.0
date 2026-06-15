@@ -19,7 +19,8 @@ class CheckoutService
             $pedido = Pedido::create([
                 'cliente_id'       => $userId, // Cambiado de 'user_id' a 'cliente_id' según tus controladores anteriores
                 'total'            => $carrito->total, 
-                'estado'           => 'confirmado', // Cambiado de 'status' a 'estado' según tus controladores anteriores
+                'estado'           => 'confirmado',
+                'titular_compra'   => $carrito->titular_compra, 
                 'lugar_de_entrega' => $lugarEntrega // <-- NUEVO CAMPO ASIGNADO
             ]);
 
