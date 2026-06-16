@@ -140,6 +140,7 @@ Route::middleware([AdminMiddleware::class])->group(function () {
     Route::patch('/usuarios_Admin/{user}/make-admin', [UserController::class, 'makeAdmin'])->name('usuarios.makeAdmin');
     Route::post('/usuarios_Admin/store-admin', [UserController::class, 'storeAdmin'])->name('usuarios.storeAdmin');
     Route::patch('/usuarios_Admin/{user}/remove-admin', [UserController::class, 'removeAdmin'])->name('usuarios.removeAdmin');
+    Route::patch('/usuarios/{id}/restore', [UserController::class, 'restore'])->name('usuarios.restore');
     Route::delete('/usuarios_Admin/{user}', [UserController::class, 'destroy'])->name('usuarios.destroy');
     Route::get('/usuarios_Admin/crear-admin', [UserController::class, 'createAdminForm'])->name('usuarios.createAdmin');
 

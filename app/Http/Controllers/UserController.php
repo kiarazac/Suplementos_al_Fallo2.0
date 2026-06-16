@@ -35,16 +35,12 @@ class UserController extends Controller
 
     // Elimina a un usuario del sistema
     public function destroy(User $user)
-    {
-        // Medida de seguridad: Evitar que el admin se elimine a sí mismo por error
-        if (Auth::id() === $user->id) {
-            return back()->withErrors(['error' => 'No puedes eliminar tu propia cuenta desde aquí.']);
-        }
+{
+    // Al ejecutar esto, Laravel solo llenará la columna 'deleted_at'
+    $user->delete();
 
-        $user->delete();
-
-        return back()->with('success', 'Usuario eliminado permanentemente.');
-    }
+    return redirect()->back()->with('success', 'Usuario desactivado correctamente.');
+}
 
     // Muestra el formulario para crear un nuevo administrador
 public function createAdminForm()
@@ -89,5 +85,17 @@ public function createAdminForm()
         // 3. Volvemos al panel de control (y gracias a tu script de JS, volverá a la pestaña que estabas mirando)
         return redirect('/panel_admin')->with('success', 'Administrador creado exitosamente.');
     }
+
+    public function restore($id)
+{
+    // 1. Buscamos al usuario, incluyendo a los que están en la "papelera"
+    $usuario = User::withTrashed()->findOrFail($id);
+
+    // 2. Lo reactivamos (esto limpia la columna deleted_at)
+    $usuario->restore();
+
+    // 3. Redirigimos de vuelta al panel con un mensajito de éxito
+    return redirect()->back()->with('success', 'El usuario ha recuperado su acceso correctamente.');
+}
 }
 

@@ -22,17 +22,17 @@ class ProductoController extends Controller
         $productos = Producto::all();
         //--- TOP 5 PRODUCTOS MÁS VENDIDOS ---
         $topProductos = DB::table('detalle_pedidos') // <-- Ojo: cambia 'detalles' por el nombre real de tu tabla (ej: 'detalle_pedidos')
-    ->join('pedidos', 'detalle_pedidos.pedido_id', '=', 'pedidos.id')
-    ->join('productos', 'detalle_pedidos.producto_id', '=', 'productos.id')
-    // Sumamos las cantidades y le ponemos un alias temporal 'total_vendido'
-    ->select('productos.nombre', DB::raw('SUM(detalle_pedidos.cantidad) as total_vendido'))
-    // IMPORTANTE: Solo contamos las ventas de pedidos confirmados
-    ->where('pedidos.estado', 'confirmado')
-    ->groupBy('productos.id', 'productos.nombre') // Agrupamos por producto
-    ->orderByDesc('total_vendido') // Ordenamos de mayor a menor
-    ->limit(5) // Nos quedamos con los 5 primeros
-    ->get();
-        
+            ->join('pedidos', 'detalle_pedidos.pedido_id', '=', 'pedidos.id')
+            ->join('productos', 'detalle_pedidos.producto_id', '=', 'productos.id')
+            // Sumamos las cantidades y le ponemos un alias temporal 'total_vendido'
+            ->select('productos.nombre', DB::raw('SUM(detalle_pedidos.cantidad) as total_vendido'))
+            // IMPORTANTE: Solo contamos las ventas de pedidos confirmados
+            ->where('pedidos.estado', 'confirmado')
+            ->groupBy('productos.id', 'productos.nombre') // Agrupamos por producto
+            ->orderByDesc('total_vendido') // Ordenamos de mayor a menor
+            ->limit(5) // Nos quedamos con los 5 primeros
+            ->get();
+
         // --- FILTRO DE CATEGORÍAS ---
         $queryCategorias = Categoria::query();
         if ($request->filled('categoria_activa')) {
@@ -49,14 +49,14 @@ class ProductoController extends Controller
 
         // --- PEDIDOS --- (Ordenados de más nuevo a más viejo)
         $pedidos = Pedido::orderBy('created_at', 'desc')->get();
-        
+
         $carritos = Carrito::all();
 
         $consultas = Consulta::orderBy('created_at', 'desc')->get();
 
         $usuarios = User::orderBy('created_at', 'desc')->get();
-
-        return view('panel_admin.index', compact('productos', 'marcas', 'categorias', 'pedidos', 'consultas', 'usuarios', 'topProductos', 'carritos'));
+        $usuariosDesactivados = User::onlyTrashed()->where('role', 'customer')->get();
+        return view('panel_admin.index', compact('productos', 'marcas', 'categorias', 'pedidos', 'consultas', 'usuarios', 'topProductos', 'carritos', 'usuariosDesactivados'));
     }
     /**
      * Show the form for creating a new resource.

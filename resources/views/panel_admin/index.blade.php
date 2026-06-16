@@ -42,6 +42,11 @@
                         <button class="nav-link text-white w-100 text-start" data-bs-toggle="pill"
                             data-bs-target="#pantalla-usuarios" type="button" role="tab">Usuarios</button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link text-white w-100 text-start" data-bs-toggle="pill"
+                            data-bs-target="#pantalla-usuarios-desactivados" type="button" role="tab">Usr.
+                            Desactivados</button>
+                    </li>
                 </ul>
             </div>
 
@@ -51,7 +56,7 @@
 
                 {{-- PANTALLA PEDIDOS --}}
                 <div class="tab-pane fade" id="pantalla-pedidos" role="tabpanel">
-                    <h1 class="text-white">Gestión de Pedidos</h1>
+                    <h1 class="welcome-container text-center fs-0">Gestión de Pedidos</h1>
                     <p class="text-white-50">Aquí puedes gestionar los pedidos realizados por los clientes.</p>
 
                     <div class="row g-4 w-100">
@@ -136,7 +141,7 @@
 
                 {{-- PANTALLA PANEL DE CONTROL --}}
                 <div class="tab-pane fade" id="pantalla-dashboard" role="tabpanel">
-                    <h1 class="text-white mb-5">Panel de Control </h1>
+                    <h1 class="welcome-container text-center fs-0">Panel de Control </h1>
 
 
                     <div class="row g-4 mt-3">
@@ -265,7 +270,7 @@
                 {{-- PANTALLA PRODUCTOS --}}
                 <div class="tab-pane fade show active" id="pantalla-productos" role="tabpanel">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h1 class="text-white m-0">Catálogo de Productos</h1>
+                        <h1 class="welcome-container text-center fs-0">Catálogo de Productos</h1>
                         <a href="{{ route('panel_admin.create') }}" class="btn btn-primary">
                             <i class="bi bi-plus-lg"></i> Crear Producto
                         </a>
@@ -536,7 +541,7 @@
                 {{-- PANTALLA DE CONSULTAS --}}
                 <div class="tab-pane fade" id="pantalla-consultas" role="tabpanel">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h1 class="text-white m-0">Listado de Consultas</h1>
+                        <h1 class="welcome-container text-center fs-0">Listado de Consultas</h1>
                     </div>
 
                     <div class="row g-4 w-100 mt-2">
@@ -558,7 +563,7 @@
                 {{-- PANTALLA DE USUARIOS --}}
                 <div class="tab-pane fade" id="pantalla-usuarios" role="tabpanel">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h1 class="text-white m-0">Listado de usuarios</h1>
+                        <h1 class="welcome-container text-center fs-0">Listado de usuarios</h1>
                     </div>
                     <div class="row g-4 w-100 mt-2">
                         @foreach($usuarios as $users)
@@ -586,6 +591,50 @@
                                 </div>
                             @endif
                         @endforeach
+                    </div>
+                </div>
+
+                {{-- PANTALLA DE USUARIOS DESACTIVADOS --}}
+                <div class="tab-pane fade" id="pantalla-usuarios-desactivados" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h1 class="welcome-container text-center fs-0">Usuarios Desactivados (Baneados)</h1>
+                    </div>
+                    <div class="row g-4 w-100 mt-2">
+                        @forelse($usuariosDesactivados as $user)
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <div class="card h-100 bg-secondary text-white border-dark shadow-sm">
+                                    <div class="card-body d-flex flex-column">
+                                        <h4 class="card-title text-dark fw-bold">{{ $user->name }}</h4>
+                                        <h6 class="card-subtitle mb-3 text-white-50">{{ $user->email }}</h6>
+
+                                        <p class="text-light small mb-3 border-bottom border-dark pb-2">
+                                            <i class="bi bi-calendar-x"></i> Desactivado el:
+                                            {{ $user->deleted_at->format('d/m/Y') }}
+                                        </p>
+
+                                        <div class="mt-auto d-flex gap-2">
+                                            {{-- Formulario para reactivar --}}
+                                            <form action="{{ route('usuarios.restore', $user->id) }}" method="POST"
+                                                class="w-100">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="btn btn-sm btn-success w-100 fw-bold"
+                                                    onclick="return confirm('¿Estás seguro de que deseas devolverle el acceso a este usuario?')">
+                                                    <i class="bi bi-arrow-counterclockwise"></i> Reactivar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="col-12">
+                                <div class="alert alert-dark border-secondary text-center text-50 p-4">
+                                    <i class="bi bi-shield-check fs-1 d-block mb-2"></i>
+                                    No hay usuarios desactivados en este momento.
+                                </div>
+                            </div>
+                        @endforelse
                     </div>
                 </div>
 
