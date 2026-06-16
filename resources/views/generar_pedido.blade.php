@@ -7,6 +7,12 @@
 <div class="container py-5 text-light">
     <div class="row justify-content-center">
         <div class="col-md-8 bg-dark p-4 rounded shadow">
+            @if(session('info'))
+            <div class="alert alert-info alert-dismissible fade show shadow-sm mb-4" role="alert">
+                <strong>¡Aviso!</strong> {{ session('info') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            @endif
             <h1 class="mb-4 text-center text-warning">Finalizar Pedido</h1>
 
             {{-- Resumen rápido del total --}}
@@ -29,7 +35,7 @@
 
                 {{-- Obtener dirección de forma segura sin causar errores si no existe --}}
                 @php
-                    $direccionUsuario = Auth::user()?->direccion;
+                $direccionUsuario = Auth::user()?->direccion;
                 @endphp
 
                 {{-- BLOQUE: ENVÍO A DOMICILIO (Oculto por defecto) --}}
@@ -43,12 +49,12 @@
 
                             {{-- Solo mostramos esta opción si el usuario realmente tiene una dirección en la BD --}}
                             @if($direccionUsuario)
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="opcion_direccion" id="dir_registrada" value="registrada" checked>
-                                    <label class="form-check-label" for="dir_registrada">
-                                        A mi dirección registrada: <span class="text-danger fw-bold">{{ $direccionUsuario }}</span>
-                                    </label>
-                                </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="opcion_direccion" id="dir_registrada" value="registrada" checked>
+                                <label class="form-check-label" for="dir_registrada">
+                                    A mi dirección registrada: <span class="text-danger fw-bold">{{ $direccionUsuario }}</span>
+                                </label>
+                            </div>
                             @endif
 
                             <div class="form-check">

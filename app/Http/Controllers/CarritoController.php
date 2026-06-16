@@ -17,6 +17,30 @@ class CarritoController extends Controller
             ->where('cliente_id', Auth::id())
             ->first();
 
+        
+        // --- NUEVO: RECALCULAR PRECIOS AL VUELO ---
+        $nuevoTotalGeneral = 0;
+
+        foreach ($carrito->detalle_carritos as $detalle) {
+            // Obtenemos el precio actual directo de la tabla de productos
+            $precioActual = $detalle->producto->precio;
+
+            // Actualizamos el detalle en caso de que el admin haya cambiado el precio
+            if ($detalle->precio != $precioActual) {
+                $detalle->precio = $precioActual;
+                $detalle->subtotal = $precioActual * $detalle->cantidad;
+                $detalle->save();
+            }
+
+            // Vamos sumando el nuevo total real
+            $nuevoTotalGeneral += $detalle->subtotal;
+        }
+
+        // Si el total cambió, lo actualizamos en la tabla carritos
+        if ($carrito->total != $nuevoTotalGeneral) {
+            $carrito->total = $nuevoTotalGeneral;
+            $carrito->save();
+        }
         return view('carrito', compact('carrito'));
     }
 
@@ -53,22 +77,22 @@ class CarritoController extends Controller
 
         } catch (\Exception $e) {
             $mensajeError = $e->getMessage();
-            
+
             // Intentamos decodificar el JSON que nos envió el CheckoutService
             $productosSinStock = json_decode($mensajeError);
 
             // Comprobamos si el error era nuestro JSON de falta de stock
             if (json_last_error() === JSON_ERROR_NONE && is_array($productosSinStock)) {
-                
+
                 // Redirigimos a TU ruta específica, enviando la variable de sesión que pide tu vista
                 return redirect()->route('carrito.producto_sin_stock')
-                                 ->with('productos_sin_stock', $productosSinStock);
+                    ->with('productos_sin_stock', $productosSinStock);
             }
 
             // Si fue un error general de Base de Datos o código, lo mandamos atrás con el error crudo
             return redirect()->back()->with('error', 'Ocurrió un error inesperado: ' . $mensajeError);
         }
-        }
+    }
 
     public function agregar(Request $request)
     {
@@ -130,7 +154,7 @@ class CarritoController extends Controller
         $carrito = Carrito::findOrFail($detalle->carrito_id);
 
         $detalle->delete();
-        
+
         if ($carrito->detalle_carritos()->count() == 0) {
             $carrito->delete();
             // En vez de return back(), mandalo al catálogo
@@ -165,6 +189,42 @@ class CarritoController extends Controller
             return redirect()->back()->with('error', 'No tienes un carrito activo');
         }
 
+        $productosBorrados = false;
+        $nuevoTotalGeneral = 0;
+
+        foreach ($carrito->detalle_carritos as $detalle) {
+
+            // 1. Verificar si el producto ya NO está activo
+            if ($detalle->producto->activo != 1) {
+                $detalle->delete(); // Lo borramos directamente de la base de datos
+                $productosBorrados = true;
+                continue; // Cortamos esta vuelta del ciclo y pasamos al siguiente producto
+            }
+
+            // 2. Si sigue activo, recalculamos su precio (lo que hicimos en el paso anterior)
+            $precioActual = $detalle->producto->precio;
+
+            if ($detalle->precio != $precioActual) {
+                $detalle->precio = $precioActual;
+                $detalle->subtotal = $precioActual * $detalle->cantidad;
+                $detalle->save();
+            }
+
+            // Sumamos al nuevo total general (solo los productos que sobrevivieron)
+            $nuevoTotalGeneral += $detalle->subtotal;
+        }
+
+        // 3. Actualizamos el carrito
+        if ($carrito->total != $nuevoTotalGeneral) {
+            $carrito->total = $nuevoTotalGeneral;
+            $carrito->save();
+        }
+
+        // 4. Si le borramos productos de su carrito, es buena práctica avisarle al usuario
+        if ($productosBorrados) {
+            // Si usas SweetAlert o alertas de Bootstrap, puedes mandar un mensaje flash
+            session()->flash('info', 'Algunos productos de tu carrito ya no están disponibles y fueron removidos.');
+        }
         return view('generar_pedido', compact('carrito'));
     }
 }

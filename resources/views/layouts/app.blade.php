@@ -22,7 +22,9 @@
 
     <!-- Contenido dinámico -->
     <main class="flex-grow-1">
+        
         @yield('content')
+
     </main>
 
     <!-- Footer -->

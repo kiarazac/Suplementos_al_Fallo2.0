@@ -196,19 +196,4 @@ class ProductoController extends Controller
 
         return redirect('/panel_admin');
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        $producto = Producto::findOrFail($id);
-
-        $producto->delete();
-
-        return redirect('/panel_admin');
-    }
-
-
-
 }
