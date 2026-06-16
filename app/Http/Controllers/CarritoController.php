@@ -17,7 +17,9 @@ class CarritoController extends Controller
             ->where('cliente_id', Auth::id())
             ->first();
 
-        
+        if (!$carrito) {
+        return view('carrito', compact('carrito'));
+    }
         // --- NUEVO: RECALCULAR PRECIOS AL VUELO ---
         $nuevoTotalGeneral = 0;
 
