@@ -581,7 +581,7 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-sm btn-danger w-100 fw-bold"
-                                                        onclick="return confirm('¿Estás seguro de eliminar esta cuenta permanentemente?')">
+                                                        onclick="return confirm('¿Estás seguro de eliminar esta cuenta?')">
                                                         Eliminar
                                                     </button>
                                                 </form>
