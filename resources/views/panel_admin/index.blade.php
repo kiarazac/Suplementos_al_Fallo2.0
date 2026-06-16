@@ -136,7 +136,9 @@
 
                 {{-- PANTALLA PANEL DE CONTROL --}}
                 <div class="tab-pane fade" id="pantalla-dashboard" role="tabpanel">
-                    <h1 class="text-white mb-5">Panel de Control</h1>
+                    <h1 class="text-white mb-5">Panel de Control </h1>
+
+
                     <div class="row g-4 mt-3">
                         <div class="row">
                             <div class="col-12 col-sm-6 col-lg-3">
@@ -146,7 +148,8 @@
                                         class="card-body d-flex flex-column justify-content-center align-items-center text-center">
                                         <h5 class="card-title text-white mb-3 fw-bold">Usuarios Registrados</h5>
                                         <p class="card-text fs-2 fw-bold m-0 text-success">
-                                            {{ $usuarios->where('role', 'customer')->count() }}</p>
+                                            {{ $usuarios->where('role', 'customer')->count() }}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -157,7 +160,8 @@
                                         class="card-body d-flex flex-column justify-content-center align-items-center text-center">
                                         <h5 class="card-title text-white mb-3 fw-bold">Pedidos Confirmados</h5>
                                         <p class="card-text fs-2 fw-bold m-0 text-warning">
-                                            {{ $pedidos->where('estado', 'confirmado')->count() }}</p>
+                                            {{ $pedidos->where('estado', 'confirmado')->count() }}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -168,7 +172,8 @@
                                         class="card-body d-flex flex-column justify-content-center align-items-center text-center">
                                         <h5 class="card-title text-white mb-3 fw-bold">Pedidos en Carrito</h5>
                                         <p class="card-text fs-2 fw-bold m-0 text-warning">
-                                            {{ $pedidos->where('estado', 'carrito')->count() }}</p>
+                                            {{ $carritos->count() }}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -179,7 +184,8 @@
                                         class="card-body d-flex flex-column justify-content-center align-items-center text-center">
                                         <h5 class="card-title text-white mb-3 fw-bold">Pedidos Entregados</h5>
                                         <p class="card-text fs-2 fw-bold m-0 text-warning">
-                                            {{ $pedidos->where('estado', 'entregado')->count() }}</p>
+                                            {{ $pedidos->where('estado', 'entregado')->count() }}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -564,7 +570,7 @@
                                             <h6 class="card-subtitle mb-3 text-white-50">{{ $users->email }}</h6>
 
                                             <div class="mt-auto d-flex gap-2">
-                                                
+
                                                 <form action="{{ route('usuarios.destroy', $users->id) }}" method="POST"
                                                     class="w-50">
                                                     @csrf

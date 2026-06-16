@@ -65,16 +65,37 @@
             }
             @endphp
 
-            <a href="/carrito" class="btn btn-outline-warning ms-auto me-3 d-flex align-items-center gap-2 position-relative">
-                <i class="bi bi-cart"></i>
+            {{-- Condición para ocultar el carrito a los administradores --}}
+            @if(!Auth::check() || Auth::user()->role != 'admin')
+                
+                @php
+                // 1. Creamos la variable temporal en PHP, arranca en 0
+                $cantidadCarrito = 0;
 
-                @if($cantidadCarrito > 0)
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    {{ $cantidadCarrito }}
-                    <span class="visually-hidden">productos en el carrito</span>
-                </span>
-                @endif
-            </a>
+                if(Auth::check()) {
+                    // 2. Buscamos el carrito usando 'cliente_id' (como está en tu BD)
+                    $carrito = \App\Models\Carrito::where('cliente_id', Auth::id())->first();
+
+                    // 3. Si el carrito existe, sumamos las cantidades del detalle
+                    if ($carrito) {
+                        // Asegúrate de que tu modelo se llame 'Detalle_Carrito'
+                        $cantidadCarrito = \App\Models\Detalle_Carrito::where('carrito_id', $carrito->id)->sum('cantidad');
+                    }
+                }
+                @endphp
+
+                <a href="/carrito" class="btn btn-outline-warning ms-auto me-3 d-flex align-items-center gap-2 position-relative">
+                    <i class="bi bi-cart"></i>
+
+                    @if($cantidadCarrito > 0)
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {{ $cantidadCarrito }}
+                        <span class="visually-hidden">productos en el carrito</span>
+                    </span>
+                    @endif
+                </a>
+
+            @endif
 
 
             @guest
