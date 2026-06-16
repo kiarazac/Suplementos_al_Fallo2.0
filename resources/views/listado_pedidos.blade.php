@@ -60,7 +60,10 @@
                                     <i class="bi bi-caret-right-fill text-warning small me-2"></i>
                                     {{ $detalle->producto->nombre }}
                                 </span>
-                                <span class="badge bg-warning text-dark rounded-pill">
+                                <span class="badge bg-secondary text-light rounded-pill fs-6">
+                                   Precio Unit. ${{ $detalle->producto->precio }}
+                                </span>
+                                <span class="badge bg-warning text-dark rounded-pill fs-6">
                                     Cant: {{ $detalle->cantidad }}
                                 </span>
                             </li>

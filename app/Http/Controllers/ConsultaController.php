@@ -24,4 +24,4 @@ class ConsultaController extends Controller
     }
 
     // Muestra los mensajes al administrador
-    
+}
