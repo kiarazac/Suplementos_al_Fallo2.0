@@ -10,7 +10,7 @@ class Carrito extends Model
         'cliente_id',
         'total',
         'estado',
-        'lugar_de_entrega',
+        
         'titular_compra',
     ];
 

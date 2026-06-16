@@ -19,6 +19,10 @@
             <div class="alert alert-secondary text-dark text-center">
                 <h4>Total a abonar: <strong>${{ $carrito->total }}</strong></h4>
             </div>
+            
+            @php
+                $direccionUsuario = Auth::user()?->direccion;
+            @endphp
 
             <form id="form-confirmar-pedido" action="{{ route('carrito.confirmar', ['id' => $carrito->id]) }}" method="POST" data-direccion-usuario="{{ $direccionUsuario ?? '' }}">
                 @csrf
@@ -33,10 +37,7 @@
                     </select>
                 </div>
 
-                {{-- Obtener dirección de forma segura sin causar errores si no existe --}}
-                @php
-                $direccionUsuario = Auth::user()?->direccion;
-                @endphp
+                
 
                 {{-- BLOQUE: ENVÍO A DOMICILIO (Oculto por defecto) --}}
                 <div id="bloque_envio" class="card text-dark bg-light mb-4 d-none">
@@ -68,7 +69,7 @@
                         {{-- Input para escribir la dirección --}}
                         <div id="bloque_input_direccion" class="mb-3 {{ $direccionUsuario ? 'd-none' : '' }}">
                             <label for="lugar_de_entrega" class="form-label fw-bold text-danger">Escribe la dirección exacta:</label>
-                            <input type="text" class="form-control border-danger" id="lugar_de_entrega" name="lugar_de_entrega" placeholder="Ej: Junín 1234, Piso 2 Depto B" value="{{ old('lugar_de_entrega', $direccionUsuario ?? '') }} required">
+                            <input type="text" class="form-control border-danger" id="lugar_de_entrega" name="lugar_de_entrega" placeholder="Ej: Junín 1234, Piso 2 Depto B" value="{{ old('lugar_de_entrega', $direccionUsuario ?? '') }}" required>
                         </div>
                     </div>
                 </div>

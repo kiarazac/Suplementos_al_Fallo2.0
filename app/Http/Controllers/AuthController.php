@@ -220,22 +220,36 @@ class AuthController extends Controller
         return redirect('/login');
     }
 
-    public function login(Request $request)
+   public function login(Request $request)
 {
-    $credentials = $request->validate([
-        'email' => ['required', 'email'],
-        'password' => ['required'],
+    // 1. Validar los datos de entrada (si ya lo tenías, déjalo igual)
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required'
     ]);
 
-    if (Auth::attempt($credentials)) {
+    // 2. Buscar si existe un usuario con ese email, INCLUYENDO los desactivados
+    $usuario = User::withTrashed()->where('email', $request->email)->first();
 
-        $request->session()->regenerate();
-
-        return redirect()->intended('/');
+    // 3. Comprobar si el usuario existe y si está desactivado (Soft Deleted)
+    if ($usuario && $usuario->trashed()) {
+        // Retornamos hacia atrás con el mensaje de error específico
+        return back()->withErrors([
+            'email' => 'Has sido desactivado por los administradores.'
+        ]);
     }
 
+    // 4. Si no está desactivado, procedemos con el login normal
+    if (Auth::attempt($request->only('email', 'password'))) {
+        $request->session()->regenerate();
+        
+        // Redirigir a donde corresponda
+        return redirect()->intended('/catalogo'); 
+    }
+
+    // Si la contraseña es incorrecta (pero la cuenta está activa)
     return back()->withErrors([
-        'email' => 'Credenciales incorrectas.',
-    ])->onlyInput('email');
+        'email' => 'Las credenciales proporcionadas no coinciden con nuestros registros.',
+    ]);
 }
 }
