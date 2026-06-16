@@ -19,7 +19,7 @@
         {{-- FILTROS --}}
         <div class="container mb-5">
             {{-- Formulario GET --}}
-            <form method="GET" action="/catalogo">
+            <form method="GET" action="{{ route('catalogo.index') }}">
                 <div class="row">
 
                     {{-- NUEVO: BARRA DE BÚSQUEDA BLANCA --}}

@@ -57,7 +57,7 @@ Route::get('/carrito/producto_sin_stock', function () {
 
 Route::get('/sobre-nosotros', function () {
     return view('sobre-nosotros');
-});
+})->name('sobre.nosotros');
 
 Route::get('/login', [AuthController::class, 'showLogin'])
     ->name('login');
@@ -82,7 +82,7 @@ Route::get(
 Route::post(
     '/registro',
     [AuthController::class, 'register']
-);
+)->name('register.submit');
 
 Route::get('/Comercializacion', function () {
     return view('Comercializacion');
@@ -92,9 +92,7 @@ Route::get('/terminos-y-condiciones', function () {
     return view('terminos-y-condiciones');
 });
 
-Route::get('/productos-insane', function () {
-    return view('Productos-insane');
-});
+
 
 Route::get('/contacto', function () {
     return view('contacto');
@@ -132,8 +130,7 @@ Route::middleware([AdminMiddleware::class])->group(function () {
     Route::patch('/categorias_Admin/{id}/activate', [CategoriasController::class, 'activate'])->name('categorias.activate');
     Route::resource('categorias_Admin', CategoriasController::class)->names('categorias');
 
-    Route::get('consultas_Admin', [App\Http\Controllers\ConsultaController::class, 'index'])->name('consultas.index');
-
+   
     // =======================================================
     // 4. NUEVAS RUTAS DE GESTIÓN DE USUARIOS
     // =======================================================

@@ -34,7 +34,7 @@
         <form
           class="row g-1"
           style="text-align: justify;"
-          action="/registro"
+          action="{{ route('register.submit') }}"
           method="POST">
 
           @csrf

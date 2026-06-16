@@ -24,10 +24,4 @@ class ConsultaController extends Controller
     }
 
     // Muestra los mensajes al administrador
-    public function index()
-    {
-        // Trae todas las consultas, ordenadas por la más reciente
-        $consultas = Consulta::latest()->get();
-        return view('admin.consultas', compact('consultas'));
-    }
-}
+    
