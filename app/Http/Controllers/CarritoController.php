@@ -86,7 +86,8 @@ class CarritoController extends Controller
             $carrito = Carrito::create([
                 'cliente_id' => Auth::id(),
                 'titular_compra' => Auth::user()->name,
-                'total' => 0
+                'total' => 0,
+               
             ]);
         }
 
